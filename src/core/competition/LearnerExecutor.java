@@ -18,18 +18,17 @@ import static core.competition.CompetitionParameters.IMG_PATH;
  */
 public class LearnerExecutor {
   public static void main(String[] args) throws IOException {
-    /** Init params */
+    // Init params
     int gameIdx = 0;
     String clientType = "java"; //"python"; // Type of client to test against (Python/Java)
     String gameFile = "";
     String[] levelFile = new String[5];
     boolean visuals = false;
 
-    /** Get arguments */
+    // Get arguments
     Map<String, List<String>> params = new HashMap<>();
     List<String> options = null;
-    for (int i = 0; i < args.length; i++) {
-      final String a = args[i];
+    for (final String a : args) {
       if (a.charAt(0) == '-') {
         if (a.length() < 2) {
           System.err.println("Error at argument " + a);
@@ -39,13 +38,13 @@ public class LearnerExecutor {
         params.put(a.substring(1), options);
       } else if (options != null) {
         options.add(a);
-      }
-      else {
+      } else {
         System.err.println("Illegal parameter usage");
         return;
       }
     }
-    /** Update params */
+
+    // Update params
     if (params.containsKey("gameId")) {
       gameIdx = Integer.parseInt(params.get("gameId").get(0));
     }
@@ -62,18 +61,17 @@ public class LearnerExecutor {
     if (params.containsKey("levelFile")) {
       String levelFileStr = params.get("levelFile").get(0);
       String[] levelFileSplitted = levelFileStr.split(":");
-      for (int i=0; i<5; i++) {
-        levelFile[i] = levelFileSplitted[i];
-      }
+      System.arraycopy(levelFileSplitted, 0, levelFile, 0, 5);
     }
-    /** Now prepare to start */
+
+    // Now prepare to start
     ElapsedWallTimer wallClock = new ElapsedWallTimer();
 
     //Port for the socket.
     String port = CompetitionParameters.SOCKET_PORT + "";
 
     //Building the command line
-    String cmd[] = new String[]{null, null, port, clientType};
+    String[] cmd = new String[]{null, null, port, clientType};
 
 
     System.out.println("[GAME] Game idx:" + gameIdx);

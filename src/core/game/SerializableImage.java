@@ -45,7 +45,6 @@ public class SerializableImage {
      * This method serializes this class into a cohesive json object, using GSon,
      * and optionally saves the converted object to a given file.
      * @param filename Name of the file to save the serialization to (optional)
-     * @return
      */
     public String serialize(String filename)
     {
@@ -58,7 +57,7 @@ public class SerializableImage {
             try{
                 message = gson.toJson(this);
                 gson.toJson(this, new FileWriter(filename));
-            }catch (Exception e){}
+            }catch (Exception ignored){}
         }
 
         return message;

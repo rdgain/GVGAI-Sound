@@ -3,7 +3,6 @@ package core.game;
 import core.competition.CompetitionParameters;
 import tools.com.google.gson.Gson;
 import ontology.Types;
-import tools.ElapsedCpuTimer;
 
 import javax.imageio.ImageIO;
 import java.io.ByteArrayOutputStream;
@@ -148,8 +147,6 @@ public class SerializableStateObservation {
     }
 
     private void buildDataArraylists(StateObservation s){
-        ElapsedCpuTimer ect = new ElapsedCpuTimer();
-
         // Create a row to be used for translation from ArrayList to array
         ArrayList<Observation> row;
 
@@ -176,7 +173,7 @@ public class SerializableStateObservation {
             for (int i = 0; i < observationGridNum; i++) {
                 for (int j = 0; j < observationGridMaxRow; j++) {
                     row = s.getObservationGrid()[i][j];
-                    observationGrid[i][j] = row.toArray(new Observation[row.size()]);
+                    observationGrid[i][j] = row.toArray(new Observation[0]);
                 }
             }
         }
@@ -194,7 +191,7 @@ public class SerializableStateObservation {
             NPCPositions = new Observation[NPCPositionsNum][NPCPositionsMaxRow];
             for (int i = 0; i < NPCPositionsNum; i++) {
                 row = s.getNPCPositions()[i];
-                NPCPositions[i] = row.toArray(new Observation[row.size()]);
+                NPCPositions[i] = row.toArray(new Observation[0]);
             }
         }
 
@@ -211,7 +208,7 @@ public class SerializableStateObservation {
             immovablePositions = new Observation[immovablePositionsNum][immovablePositionsMaxRow];
             for (int i = 0; i < s.getImmovablePositions().length; i++) {
                 row = s.getImmovablePositions()[i];
-                immovablePositions[i] = row.toArray(new Observation[row.size()]);
+                immovablePositions[i] = row.toArray(new Observation[0]);
             }
         }
 
@@ -228,7 +225,7 @@ public class SerializableStateObservation {
             movablePositions = new Observation[movablePositionsNum][movablePositionsMaxRow];
             for (int i = 0; i < movablePositionsNum; i++) {
                 row = s.getMovablePositions()[i];
-                movablePositions[i] = row.toArray(new Observation[row.size()]);
+                movablePositions[i] = row.toArray(new Observation[0]);
             }
         }
 
@@ -245,7 +242,7 @@ public class SerializableStateObservation {
             resourcesPositions = new Observation[resourcesPositionsNum][resourcesPositionsMaxRow];
             for (int i = 0; i < resourcesPositionsNum; i++) {
                 row = s.getResourcesPositions()[i];
-                resourcesPositions[i] = row.toArray(new Observation[row.size()]);
+                resourcesPositions[i] = row.toArray(new Observation[0]);
             }
         }
 
@@ -262,7 +259,7 @@ public class SerializableStateObservation {
             portalsPositions = new Observation[portalsPositionsNum][portalsPositionsMaxRow];
             for (int i = 0; i < portalsPositionsNum; i++) {
                 row = s.getPortalsPositions()[i];
-                portalsPositions[i] = row.toArray(new Observation[row.size()]);
+                portalsPositions[i] = row.toArray(new Observation[0]);
             }
         }
 
@@ -279,7 +276,7 @@ public class SerializableStateObservation {
             fromAvatarSpritesPositions = new Observation[fromAvatarSpritesPositionsNum][fromAvatarSpritesPositionsMaxRow];
             for (int i = 0; i < fromAvatarSpritesPositionsNum; i++) {
                 row = s.getFromAvatarSpritesPositions()[i];
-                fromAvatarSpritesPositions[i] = row.toArray(new Observation[row.size()]);
+                fromAvatarSpritesPositions[i] = row.toArray(new Observation[0]);
             }
         }
     }
@@ -289,14 +286,10 @@ public class SerializableStateObservation {
     public byte[] imageToByteArray() throws IOException {
         ByteArrayOutputStream output = new ByteArrayOutputStream();
         File pngfile = new File(CompetitionParameters.SCREENSHOT_FILENAME);
-        if (pngfile != null) {
-            ImageIO.write(ImageIO.read(pngfile), "png", output);
-            imageArray = output.toByteArray();
-            if (imageArray == null) {
-                System.out.println("SerializableStateObservation: imageToByteArray(): imageArray is null");
-            }
-        } else {
-            System.err.println("SerializableStateObservation: imageToByteArray(): pngfile is null");
+        ImageIO.write(ImageIO.read(pngfile), "png", output);
+        imageArray = output.toByteArray();
+        if (imageArray == null) {
+            System.out.println("SerializableStateObservation: imageToByteArray(): imageArray is null");
         }
         return imageArray;
     }
@@ -305,7 +298,6 @@ public class SerializableStateObservation {
      * This method serializes this class into a cohesive json object, using GSon,
      * and optionally saves the converted object to a given file.
      * @param filename Name of the file to save the serialization to (optional)
-     * @return
      */
     public String serialize(String filename)
     {
@@ -318,7 +310,7 @@ public class SerializableStateObservation {
             try{
                 message = gson.toJson(this);
                 gson.toJson(this, new FileWriter(filename));
-            }catch (Exception e){}
+            }catch (Exception ignored){}
         }
         return message;
     }
@@ -339,17 +331,17 @@ public class SerializableStateObservation {
 
     @Override
     public String toString() {
-        String observation = "ObservationGrid{\n";
+        StringBuilder observation = new StringBuilder("ObservationGrid{\n");
         if (observationGrid != null) {
-            for (int i = 0; i < observationGrid.length; i++) {
-                for (int j = 0; j < observationGrid[i].length; j++) {
-                    for (Observation obs : observationGrid[i][j]) {
-                        observation += obs.toString();
+            for (Observation[][] observations : observationGrid) {
+                for (Observation[] observation1 : observations) {
+                    for (Observation obs : observation1) {
+                        observation.append(obs.toString());
                     }
                 }
             }
         }
-        observation += "}";
+        observation.append("}");
 
         return "SerializableStateObservation{" +
                 "imageArray=" + Arrays.toString(imageArray) +

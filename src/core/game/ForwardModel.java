@@ -150,7 +150,7 @@ public class ForwardModel extends Game
                 VGDLSprite sp = spriteIt.next();
                 VGDLSprite spCopy = sp.copy();
 
-                spriteGroups[i].addSprite(spCopy.spriteID, spCopy);
+                spriteGroups[i].addSprite(spCopy);
 
                 String hidden = "False";
                 if (spCopy.hidden != null) {

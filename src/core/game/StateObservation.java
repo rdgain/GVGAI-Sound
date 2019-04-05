@@ -9,9 +9,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.TreeSet;
 
-import core.competition.CompetitionParameters;
-import core.logging.Logger;
-
 /**
  * Created with IntelliJ IDEA.
  * User: Diego
@@ -19,6 +16,7 @@ import core.logging.Logger;
  * Time: 15:37
  * This is a Java port from Tom Schaul's VGDL - https://github.com/schaul/py-vgdl
  */
+@SuppressWarnings("WeakerAccess")
 public class StateObservation {
 
     /**
@@ -53,8 +51,7 @@ public class StateObservation {
      * @return a copy of the state observation.
      */
     public StateObservation copy() {
-        StateObservation copyObs = new StateObservation(model.copy(), this.playerID);
-        return copyObs;
+        return new StateObservation(model.copy(), this.playerID);
     }
 
     /**

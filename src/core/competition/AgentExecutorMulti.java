@@ -32,9 +32,7 @@ public class AgentExecutorMulti {
 
         int seed = new Random().nextInt();
 
-        /**
-         * Play 2 games, reversing the order of the players in the second one.
-         */
+        // Play 2 games, reversing the order of the players in the second one.
         String[] filename = action_file.split("\\.");
         double[] gameScore = ArcadeMachine.runOneGame(game, level, false, players, action_file, seed, 0);
         System.out.println("END-GAME");

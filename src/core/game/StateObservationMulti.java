@@ -42,7 +42,9 @@ public class StateObservationMulti extends StateObservation {
      * @param playerID ID of the player to query
      * @return the available actions.
      */
-    public ArrayList<Types.ACTIONS> getAvailableActions(int playerID) { return model.getAvatarActions(playerID, true); }
+    public ArrayList<Types.ACTIONS> getAvailableActions(int playerID) {
+        return model.getAvatarActions(playerID, true);
+    }
 
     /**
      * Method overloaded for multi player games. Now passes the playerID.
@@ -184,8 +186,7 @@ public class StateObservationMulti extends StateObservation {
 
 
     public StateObservationMulti copy() {
-        StateObservationMulti copyObs = new StateObservationMulti(model.copy(), this.playerID);
-        return copyObs;
+        return new StateObservationMulti(model.copy(), this.playerID);
     }
 
     /**

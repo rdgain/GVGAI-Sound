@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Random;
 
 import core.competition.CompetitionParameters;
+import core.vgdl.SpriteGroup;
 import core.vgdl.VGDLFactory;
 import core.vgdl.VGDLRegistry;
 import core.vgdl.VGDLSprite;
@@ -14,8 +15,6 @@ import core.content.GameContent;
 import tools.IO;
 import tools.Vector2d;
 import tools.pathfinder.PathFinder;
-
-import static tools.Utils.findMaxDivisor;
 
 /**
  * Created with IntelliJ IDEA. User: Diego Date: 16/10/13 Time: 14:00 This is a
@@ -49,10 +48,10 @@ public class BasicGame extends Game {
 		super();
 
 		// Add here whatever mappings are common for all BasicGames.
-		charMapping.put('w', new ArrayList<String>());
+		charMapping.put('w', new ArrayList<>());
 		charMapping.get('w').add("wall");
 
-		charMapping.put('A', new ArrayList<String>());
+		charMapping.put('A', new ArrayList<>());
 		charMapping.get('A').add("avatar");
 
 		// Default values for frame rate and maximum number of sprites allowed.
@@ -66,8 +65,7 @@ public class BasicGame extends Game {
 	/**
 	 * Builds a level, receiving a file name.
 	 *
-	 * @param gamelvl
-	 *            file name containing the level.
+	 * @param gamelvl file name containing the level.
 	 */
 	public void buildLevel(String gamelvl, int randomSeed) {
 		String[] lines = new IO().readFile(gamelvl);
@@ -78,7 +76,7 @@ public class BasicGame extends Game {
 
 		if (obs != null) {
 			doPathf = true;
-			int obsArray[] = VGDLRegistry.GetInstance().explode(obs);
+			int[] obsArray = VGDLRegistry.GetInstance().explode(obs);
 			for (Integer it : obsArray)
 				obstacles.add(it);
 		}
@@ -96,20 +94,14 @@ public class BasicGame extends Game {
 		}
 	}
 
-	@Override
 	/**
 	 * Builds a level from this game, reading it from file.
-	 *
-	 * @param gamelvl
-	 *            filename of the level to load.
 	 */
+	@Override
 	public void buildStringLevel(String[] lines, int randomSeed) {
-		// Read the level description
-		String[] desc_lines = lines;
-
 		// Dimensions of the level read from the file.
-		size.width = desc_lines[0].length();
-		size.height = desc_lines.length;
+		size.width = lines[0].length();
+		size.height = lines.length;
 
 		if (square_size != -1) {
 			block_size = square_size;
@@ -123,17 +115,17 @@ public class BasicGame extends Game {
 		screenSize = new Dimension(size.width * block_size, size.height * block_size);
 
 		for (int i = 0; i < size.height; ++i) {
-			String line = desc_lines[i];
+			String line = lines[i];
 			if (line.length() < size.width) {
 				// This might happen. We just concat ' ' until size.
-				desc_lines[i] = completeLine(line, size.width - line.length(), " ");
+				lines[i] = completeLine(line, size.width - line.length(), " ");
 			}
 		}
 
-		ArrayList<VGDLSprite> avatars = new ArrayList<VGDLSprite>();
+		ArrayList<VGDLSprite> avatars = new ArrayList<>();
 		// All sprites are created and placed here:
 		for (int i = 0; i < size.height; ++i) {
-			String line = desc_lines[i];
+			String line = lines[i];
 
 			// For each character
 			for (int j = 0; j < size.width; ++j) {
@@ -147,11 +139,11 @@ public class BasicGame extends Game {
 							for (int y = -1; y <= 1; y++) {
 								if (Math.abs(x) != Math.abs(y)
 										&& (j + x >= 0 && j + x < size.width && i + y >= 0 && i + y < size.height)) {
-									if (charMapping.containsKey(desc_lines[i + y].charAt(j + x))) {
+									if (charMapping.containsKey(lines[i + y].charAt(j + x))) {
 										ArrayList<String> neighborTiles = charMapping
-												.get(desc_lines[i + y].charAt(j + x));
+												.get(lines[i + y].charAt(j + x));
 										if (neighborTiles.contains(obj)) {
-											similarTiles += Math.floor(Math.abs(x) * (x + 3) / 2)
+											similarTiles += Math.floor(Math.abs(x) * (x + 3) / 2.0)
 													+ Math.abs(y) * (y + 3) * 2;
 										}
 									}
@@ -184,7 +176,8 @@ public class BasicGame extends Game {
 					}
 				}
 				else if(c != ' '){
-					Logger.getInstance().addMessage(new Message(Message.WARNING, "\"" + c + "\" is not defined in the level mapping."));
+					Logger.getInstance().addMessage(new Message(Message.WARNING, "\"" + c +
+							"\" is not defined in the level mapping."));
 				}
 			}
 		}
@@ -192,18 +185,18 @@ public class BasicGame extends Game {
 		if (avatars.size() > no_players) {
 			Logger.getInstance().addMessage(new Message(Message.WARNING,
 					"No more than " + no_players + " avatar(s) allowed (Others are destroyed)."));
-			for(int i=0; i<this.spriteGroups.length; i++){
-				for(int j=no_players; j<avatars.size(); j++){
-					this.spriteGroups[i].removeSprite(avatars.get(j));
+			for (SpriteGroup spriteGroup : this.spriteGroups) {
+				for (int j = no_players; j < avatars.size(); j++) {
+					spriteGroup.removeSprite(avatars.get(j));
 				}
 			}
 		}
 
 		// Nobody has been killed... yet!
-		kill_list = new ArrayList<VGDLSprite>();
+		kill_list = new ArrayList<>();
 
 		// Generate the initial state observation.
-		this.createAvatars(-1);
+		this.createAvatars();
 		this.initForwardModel();
 	}
 
@@ -236,10 +229,8 @@ public class BasicGame extends Game {
 	/**
 	 * Adds one sprites in the position indicated.
 	 *
-	 * @param key
-	 *            sprite type to add.
-	 * @param position
-	 *            position where the sprite will be placed
+	 * @param key sprite type to add.
+	 * @param position position where the sprite will be placed
 	 */
 	public VGDLSprite addSpriteIn(String key, Vector2d position) {
 		int itype = VGDLRegistry.GetInstance().getRegisteredSpriteValue(key);
@@ -249,10 +240,8 @@ public class BasicGame extends Game {
 	/**
 	 * Adds all sprites that 'c' represents in the position indicated.
 	 *
-	 * @param keys
-	 *            List of sprite types to add.
-	 * @param position
-	 *            position where all these sprites will be placed.
+	 * @param keys List of sprite types to add.
+	 * @param position position where all these sprites will be placed.
 	 */
 	public void addSpritesIn(ArrayList<String> keys, Vector2d position) {
 		// We might have more than one sprite in the same position.
@@ -264,12 +253,9 @@ public class BasicGame extends Game {
 	/**
 	 * Takes a line and concats filler as many times as specified.
 	 *
-	 * @param base
-	 *            initial string.
-	 * @param occurrences
-	 *            how many times filler is appended
-	 * @param filler
-	 *            string to append occurrences times to base.
+	 * @param base initial string.
+	 * @param occurrences how many times filler is appended
+	 * @param filler string to append occurrences times to base.
 	 * @return the resultant string.
 	 */
 	private String completeLine(String base, int occurrences, String filler) {

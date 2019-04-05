@@ -86,12 +86,12 @@ public class GameDescription {
 	 */
 	public GameDescription(Game currentGame) {
 		this.currentGame = currentGame;
-		this.avatar = new ArrayList<SpriteData>();
-		this.npcList = new ArrayList<SpriteData>();
-		this.portalList = new ArrayList<SpriteData>();
-		this.resourceList = new ArrayList<SpriteData>();
-		this.staticList = new ArrayList<SpriteData>();
-		this.movingList = new ArrayList<SpriteData>();
+		this.avatar = new ArrayList<>();
+		this.npcList = new ArrayList<>();
+		this.portalList = new ArrayList<>();
+		this.resourceList = new ArrayList<>();
+		this.staticList = new ArrayList<>();
+		this.movingList = new ArrayList<>();
 		this.charMapping = currentGame.getCharMapping();
 
 		reset(currentGame);
@@ -114,8 +114,7 @@ public class GameDescription {
 	/**
 	 * Reset the game description object and assign new game object
 	 *
-	 * @param currentGame
-	 *            new game object assigned
+	 * @param currentGame new game object assigned
 	 */
 	public void reset(Game currentGame) {
 		this.currentGame = currentGame;
@@ -146,8 +145,8 @@ public class GameDescription {
 			}
 		}
 
-		for (int i = 0; i < avatar.size(); i++) {
-			MovingAvatar temp = (MovingAvatar) currentGame.getTempAvatar(avatar.get(i));
+		for (SpriteData spriteData : avatar) {
+			MovingAvatar temp = (MovingAvatar) currentGame.getTempAvatar(spriteData);
 			if (actions == null || actions.size() < temp.actions.size()) {
 				actionsNIL = temp.actionsNIL;
 				actions = temp.actions;
@@ -161,11 +160,8 @@ public class GameDescription {
 	 * Build the generated level to be tested using an agent using the original
 	 * Level Mapping.
 	 *
-	 * @param level
-	 *            a string of characters that are supplied in the character
-	 *            mapping
-	 * @return StateObservation object that can be used to simulate the game.
-	 * 				return null when there is errors
+	 * @param level a string of characters that are supplied in the character mapping
+	 * @return StateObservation object that can be used to simulate the game. null when there are errors
 	 */
 	public StateObservation testLevel(String level) {
 		return testLevel(level, null);
@@ -175,11 +171,8 @@ public class GameDescription {
 	 * Build the generated level to be tested using an agent. You should call
 	 * this version if you are using your own character mapping
 	 *
-	 * @param level
-	 *            a string of characters that are supplied in the character
-	 *            mapping
-	 * @return StateObservation object that can be used to simulate the game.
-	 * 				return null when there is errors
+	 * @param level a string of characters that are supplied in the character mapping
+	 * @return StateObservation object that can be used to simulate the game. null when there is errors
 	 */
 	public StateObservation testLevel(String level, HashMap<Character, ArrayList<String>> charMapping) {
 		Logger.getInstance().flushMessages();
@@ -207,29 +200,27 @@ public class GameDescription {
 	}
 	
 	/**
-	     * get list of errors from the system
-	     * 
-	     * @return a list of errors
-	     */
-	    public ArrayList<Message> getErrors() {
+	 * get list of errors from the system
+	 *
+	 * @return a list of errors
+	 */
+	public ArrayList<Message> getErrors() {
 		return Logger.getInstance().getMessages(Message.ERROR);
 	    }
 	    
-	    /**
-	     * get list of warnings from the system
-	     * 
-	     * @return a list of warning
-	     */
-	    public ArrayList<Message> getWarnings() {
+	/**
+	 * get list of warnings from the system
+	 *
+	 * @return a list of warning
+	 */
+	public ArrayList<Message> getWarnings() {
 		return Logger.getInstance().getMessages(Message.WARNING);
 	    }
 
 	/**
 	 * Get player supported actions
 	 *
-	 * @param includeNIL
-	 *            boolean to identify if the NIL action should exists in the
-	 *            supported actions
+	 * @param includeNIL boolean to identify if the NIL action should exists in the supported actions
 	 * @return list of all player supported actions
 	 */
 	public ArrayList<Types.ACTIONS> getAvailableActions(boolean includeNIL) {
@@ -300,7 +291,7 @@ public class GameDescription {
 	 * @return an array of sprite data
 	 */
 	public ArrayList<SpriteData> getAllSpriteData() {
-		ArrayList<SpriteData> result = new ArrayList<SpriteData>();
+		ArrayList<SpriteData> result = new ArrayList<>();
 		result.addAll(avatar);
 		result.addAll(npcList);
 		result.addAll(resourceList);
@@ -314,12 +305,9 @@ public class GameDescription {
 	/**
 	 * Get a list of all effects happening to the first sprite
 	 *
-	 * @param stype1
-	 *            the sprite name of the first sprite in the collision
-	 * @param stype2
-	 *            the sprite name of the second sprite in the collision
-	 * @return an array of all possible effects. If there is no effects, an
-	 *         empty array is returned
+	 * @param stype1 the sprite name of the first sprite in the collision
+	 * @param stype2 the sprite name of the second sprite in the collision
+	 * @return an array of all possible effects. If there are no effects, an empty array is returned
 	 */
 	public ArrayList<GameDescription.InteractionData> getInteraction(String stype1, String stype2) {
 		int itype1 = VGDLRegistry.GetInstance().getRegisteredSpriteValue(stype1);
@@ -371,7 +359,6 @@ public class GameDescription {
 		 * List of all the parents till the top of the hierarchy
 		 */
 		public ArrayList<String> parents;
-
 		public boolean isSingleton;
 
 		public boolean isAvatar;
@@ -381,9 +368,9 @@ public class GameDescription {
 		public boolean isStatic;
 
 		public SpriteData(HashMap<String, String> parameters) {
-			this.sprites = new ArrayList<String>();
-			this.parents = new ArrayList<String>();
-			this.parameters = new HashMap<String, String>();
+			this.sprites = new ArrayList<>();
+			this.parents = new ArrayList<>();
+			this.parameters = new HashMap<>();
 			for(String key:parameters.keySet()){
 			    this.parameters.put(key, parameters.get(key));
 			}
@@ -391,9 +378,9 @@ public class GameDescription {
 
 		@Override
 		public String toString() {
-			String reset = "";
+			StringBuilder reset = new StringBuilder();
 			for(String key:parameters.keySet()){
-				reset += " " + key + "=" + parameters.get(key);
+				reset.append(" ").append(key).append("=").append(parameters.get(key));
 			}
 			return name + " > " + type + " " + reset;
 		}
@@ -420,13 +407,11 @@ public class GameDescription {
 		}
 
 		@Override
-		protected Object clone() throws CloneNotSupportedException {
+		protected Object clone(){
 			SpriteData s = new SpriteData(this.parameters);
 			s.type = type;
 			s.name = name;
-			for (int i = 0; i < sprites.size(); i++) {
-				s.sprites.add(sprites.get(i));
-			}
+			s.sprites.addAll(sprites);
 			s.isSingleton = isSingleton;
 			s.isAvatar = isAvatar;
 			s.isNPC = isNPC;
@@ -464,13 +449,11 @@ public class GameDescription {
 		public String win;
 
 		public TerminationData() {
-			sprites = new ArrayList<String>();
+			sprites = new ArrayList<>();
 		}
 
 		/**
 		 * Player ID for win state used is 0, default for single player games.
-		 *
-		 * @return
 		 */
 		@Override
 		public String toString() {
@@ -501,7 +484,7 @@ public class GameDescription {
 		public ArrayList<String> sprites;
 
 		public InteractionData() {
-			sprites = new ArrayList<String>();
+			sprites = new ArrayList<>();
 		}
 
 		@Override

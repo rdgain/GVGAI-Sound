@@ -805,7 +805,8 @@ public abstract class Game {
 	 */
 	protected void addSprite(VGDLSprite sprite, int itype) {
 		sprite.spriteID = nextSpriteID;
-		spriteGroups[itype].addSprite(nextSpriteID++, sprite);
+		nextSpriteID++;
+		spriteGroups[itype].addSprite(sprite);
 		num_sprites++;
 
 		if (sprite.is_stochastic)

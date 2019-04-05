@@ -13,16 +13,16 @@ import java.util.Random;
  */
 public class GVGExecutor {
 
-    public static String[] gameFiles;
-    public static ArrayList<String>[] levelFiles;
+    private static String[] gameFiles;
+    private static ArrayList<String>[] levelFiles;
     public static String agent;
-    public static boolean saveActions;
-    public static String[] resultFiles;
-    public static int[] seeds;
-    public static boolean visibility;
-    public static int repetitions;
+    private static boolean saveActions;
+    private static String[] resultFiles;
+    private static int[] seeds;
+    private static boolean visibility;
+    private static int repetitions;
 
-    public static void printHelp()
+    private static void printHelp()
     {
         System.out.println("Usage: java GVGExecutor <params>");
         System.out.println("\t-g Game file(s) to play in.\n" +
@@ -31,8 +31,11 @@ public class GVGExecutor {
                 "\t\t[Ex: -g examples/gridphysics/aliens.txt:examples/gridphysics/sokoban.txt]");
         System.out.println("\t-l Level file(s) to play in.\n" +
                 "\t\t[Mandatory]\n" +
-                "\t\t[Games separated by ':'. Level files within each game separated by ';'. Number of games must match the one from '-g']\n" +
-                "\t\t[Ex: -l examples/gridphysics/aliens_lvl0.txt;examples/gridphysics/aliens_lvl1.txt:examples/gridphysics/sokoban_lvl0.txt;examples/gridphysics/sokoban_lvl1.txt;examples/gridphysics/sokoban_lvl2.txt]");
+                "\t\t[Games separated by ':'. Level files within each game separated by ';'. Number of games must " +
+                "match the one from '-g']\n" +
+                "\t\t[Ex: -l examples/gridphysics/aliens_lvl0.txt;examples/gridphysics/aliens_lvl1.txt:" +
+                "examples/gridphysics/sokoban_lvl0.txt;examples/gridphysics/sokoban_lvl1.txt;examples/gridphysics/" +
+                "sokoban_lvl2.txt]");
         System.out.println("\t-ag Agent name to execute.\n" +
                 "\t\t[Mandatory]\n" +
                 "\t\t[Only one agent]\n" +
@@ -40,11 +43,13 @@ public class GVGExecutor {
                 "\t\t[Ex for HUMANS: -ag tracks.singlePlayer.tools.human.Agent]");
         System.out.println("\t-res Output results file.\n" +
                 "\t\t[Optional]\n" +
-                "\t\t[Games separated by ':'. A file per game, or all games the same common file ('output.txt' as default). Number of games must match the one from '-g']\n" +
+                "\t\t[Games separated by ':'. A file per game, or all games the same common file ('output.txt' as " +
+                "default). Number of games must match the one from '-g']\n" +
                 "\t\t[Ex: -res output_game1.txt:output_game2.txt]");
         System.out.println("\t-sds Seeds for all games\n" +
                 "\t\t[Optional]\n" +
-                "\t\t[Seeds separated by ':'. A seed per game, or all random (default). Number of games must match the one from '-g']\n" +
+                "\t\t[Seeds separated by ':'. A seed per game, or all random (default). Number of games must match " +
+                "the one from '-g']\n" +
                 "\t\t[Ex: -sds 1342:3513]");
         System.out.println("\t-vis Graphics on.\n" +
                 "\t\t[Optional]\n" +
@@ -54,8 +59,12 @@ public class GVGExecutor {
                 "\t\t[Optional]\n" +
                 "\t\t[Default: 1 repetition.]\n" +
                 "\t\t[Ex: -rep 5]\n");
-        System.out.printf("\tComplete example:\n" +
-                "\t\tjava GVGExecutor -g examples/gridphysics/aliens.txt:examples/gridphysics/sokoban.txt -l examples/gridphysics/aliens_lvl0.txt;examples/gridphysics/aliens_lvl1.txt:examples/gridphysics/sokoban_lvl0.txt;examples/gridphysics/sokoban_lvl1.txt;examples/gridphysics/sokoban_lvl2.txt -ag tracks.singlePlayer.deprecated.sampleMCTS.Agent -res output_game1.txt:output_game2.txt -seed 1342:3513 -vis 1 -rep 5");
+        System.out.println("\tComplete example:\n" +
+                "\t\tjava GVGExecutor -g examples/gridphysics/aliens.txt:examples/gridphysics/sokoban.txt -l " +
+                "examples/gridphysics/aliens_lvl0.txt;examples/gridphysics/aliens_lvl1.txt:examples/gridphysics/" +
+                "sokoban_lvl0.txt;examples/gridphysics/sokoban_lvl1.txt;examples/gridphysics/sokoban_lvl2.txt -ag" +
+                " tracks.singlePlayer.deprecated.sampleMCTS.Agent -res output_game1.txt:output_game2.txt -seed" +
+                " 1342:3513 -vis 1 -rep 5");
 
         //Other examples:
         // -g examples/gridphysics/aliens.txt -l examples/gridphysics/aliens_lvl0.txt -ag tracks.singlePlayer.deprecated.sampleMCTS.Agent -res output_game1.txt -sds 1342 -vis 1 -rep 1
@@ -66,18 +75,18 @@ public class GVGExecutor {
     }
 
     @SuppressWarnings("unchecked")
-    public static void parseParameter(String arg1, String arg2)
+    private static void parseParameter(String arg1, String arg2)
     {
         if(arg1.equalsIgnoreCase("-g"))
             gameFiles = arg2.split(":");
         else if(arg1.equalsIgnoreCase("-l"))
         {
-            String allLevels[] = arg2.split(";");
+            String[] allLevels = arg2.split(";");
             levelFiles = new ArrayList[allLevels.length];
             for(int i = 0; i < allLevels.length; ++i)
             {
                 levelFiles[i] = new ArrayList<>();
-                String levels[] = allLevels[i].split(":");
+                String[] levels = allLevels[i].split(":");
                 for(String l : levels)
                     levelFiles[i].add(l);
             }
@@ -85,12 +94,12 @@ public class GVGExecutor {
         else if(arg1.equalsIgnoreCase("-ag"))
             agent = arg2;
         else if(arg1.equalsIgnoreCase("-act"))
-            saveActions = Integer.parseInt(arg2) == 0 ? false : true;
+            saveActions = Integer.parseInt(arg2) != 0;
         else if(arg1.equalsIgnoreCase("-res"))
             resultFiles = arg2.split(":");
         else if(arg1.equalsIgnoreCase("-sds"))
         {
-            String allSeeds [] = arg2.split(":");
+            String[] allSeeds = arg2.split(":");
             seeds = new int[allSeeds.length];
             for(int i = 0; i < seeds.length; ++i)
             {
@@ -98,12 +107,12 @@ public class GVGExecutor {
             }
         }
         else if(arg1.equalsIgnoreCase("-vis"))
-            visibility = Integer.parseInt(arg2) == 0 ? false : true;
+            visibility = Integer.parseInt(arg2) != 0;
         else if(arg1.equalsIgnoreCase("-rep"))
             repetitions = Integer.parseInt(arg2);
     }
 
-    public static void main(String args[])
+    public static void main(String[] args)
     {
         if(args.length < 6 || (args.length % 2 != 0))
         {
@@ -124,7 +133,8 @@ public class GVGExecutor {
         if(num_games != levelFiles.length)
             throw new RuntimeException("Number of games in -g and -l must match.");
         if(resultFiles != null && num_games != resultFiles.length)
-            throw new RuntimeException("If result output files are provided, their number must match the number of games.");
+            throw new RuntimeException("If result output files are provided, their number must match the number of " +
+                    "games.");
         if(seeds != null && num_games != seeds.length)
             throw new RuntimeException("If seeds are provided, their number must match the number of games.");
         if(seeds == null)
@@ -158,7 +168,7 @@ public class GVGExecutor {
 
                 String game = gameFiles[i];
                 int num_levels = levelFiles[i].size();
-                String levels[] = new String[num_levels];
+                String[] levels = new String[num_levels];
 
                 //For each level:
                 for (int j = 0; j < num_levels; ++j) {
@@ -176,9 +186,9 @@ public class GVGExecutor {
                         double[] result = ArcadeMachine.runOneGame(game, levels[j], visibility, agent,
                                 saveActions ? actionFile : null, seed, 0);
 
-                        String line = game + " " + levels[j] + " " + seed + " ";
+                        StringBuilder line = new StringBuilder(game + " " + levels[j] + " " + seed + " ");
                         for (double d : result)
-                            line += (d + " ");
+                            line.append(d).append(" ");
                         writer.write(line + "\n");
                         System.out.println(line);
 
@@ -186,11 +196,12 @@ public class GVGExecutor {
                 }
             }
 
+            assert writer != null;
             writer.close();
 
-        }catch(Exception e)
+        } catch(Exception e)
         {
-            System.out.println(e);
+            e.printStackTrace();
         }
 
 

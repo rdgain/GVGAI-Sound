@@ -106,7 +106,7 @@ public class Observation implements Comparable<Observation>
      */
     public boolean equals(Object other)
     {
-        if(other == null || !(other instanceof Observation))
+        if(!(other instanceof Observation))
             return false;
 
         Observation o = (Observation) other;
