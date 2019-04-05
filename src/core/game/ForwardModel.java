@@ -1,5 +1,6 @@
 package core.game;
 
+import java.applet.AudioClip;
 import java.awt.Dimension;
 import java.util.*;
 
@@ -243,8 +244,7 @@ public class ForwardModel extends Game
         if(newObs || moved)
         {
             //First, remove observation if the sprite moved.
-            if(moved)
-                removeObservationFromGrid(obs, oldPosition);
+            if(moved) removeObservationFromGrid(obs, oldPosition);
 
             addObservationToGrid(obs, obs.position);
         }
@@ -625,7 +625,7 @@ public class ForwardModel extends Game
     private void updateAllObservations() {
         //Now, update all others (but avatar).
         int typeIndex = spriteOrder.length-1;
-        for(int i = typeIndex; i >=0; --i)   //For update, opposite order than drawing.
+        for(int i = typeIndex; i >=0; --i)   // For update, opposite order than drawing.
         {
             int spriteTypeInt = spriteOrder[i];
 
@@ -1062,6 +1062,13 @@ public class ForwardModel extends Game
     @Override
     public void buildStringLevel(String[] levelString, int randomSeed) {
         throw new RuntimeException("BuildLevel should not be called in this instance.");
+    }
+
+
+    /* ********** Audio sensors ********** */
+
+    AudioClip[][] getAudioGrid() {
+        return null;  // TODO: generate grid, include sounds made by effects or specific sprites
     }
 
 }
