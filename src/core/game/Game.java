@@ -1421,7 +1421,8 @@ public abstract class Game {
 							}
 						}
 						catch(ConcurrentModificationException e){
-							Logger.getInstance().addMessage(new Message(Message.WARNING, "you can't spawn sprites outside of the screen."));
+							Logger.getInstance().addMessage(new Message(Message.WARNING,
+									"you can't spawn sprites outside of the screen."));
 						}
 					}
 			}
@@ -1620,7 +1621,7 @@ public abstract class Game {
 			}
 
 			if (sprite.is_avatar)
-				// go through all avatars to see which avatar is dead
+				// Go through all avatars to see which avatar is dead
 				for (int i = 0; i < no_players; i++)
 					if (sprite == avatars[i])
 						avatars[i] = null;
