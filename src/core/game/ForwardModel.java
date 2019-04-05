@@ -3,8 +3,6 @@ package core.game;
 import java.awt.Dimension;
 import java.util.*;
 
-import core.competition.CompetitionParameters;
-import core.logging.Logger;
 import core.vgdl.SpriteGroup;
 import core.vgdl.VGDLSprite;
 import ontology.Types;
@@ -19,13 +17,14 @@ import tools.*;
  * Time: 15:37
  * This is a Java port from Tom Schaul's VGDL - https://github.com/schaul/py-vgdl
  */
+@SuppressWarnings("unchecked")
 public class ForwardModel extends Game
 {
 
     /**
      * ID of the player that gets this FM
      */
-    int playerID;
+    private int playerID;
 
 
     /**
@@ -35,60 +34,53 @@ public class ForwardModel extends Game
      */
     private Random randomObs;
 
-
     /**
      * Boolean map of sprite types that are NPCs.
      * npcList[spriteType]==true : spriteType is NPC.
      */
-    private boolean playerList[];
-
-    /**
-     * Boolean map of sprite types that are NPCs.
-     * npcList[spriteType]==true : spriteType is NPC.
-     */
-    private boolean npcList[];
+    private boolean[] npcList;
 
     /**
      * Boolean map of sprite types that are immovable sprites.
      * immList[spriteType]==true : spriteType is immovable sprite.
      */
-    private boolean immList[];
+    private boolean[] immList;
 
     /**
      * Boolean map of sprite types that can move.
      * movList[spriteType]==true : spriteType can move.
      */
-    private boolean movList[];
+    private boolean[] movList;
 
     /**
      * Boolean map of sprite types that are resources.
      * resList[spriteType]==true : spriteType is resource.
      */
-    private boolean resList[];
+    private boolean[] resList;
 
     /**
      * Boolean map of sprite types that are portals or doors.
      * portalList[spriteType]==true : spriteType is portal or door.
      */
-    private boolean portalList[];
+    private boolean[] portalList;
 
     /**
      * Boolean map of sprite types that created by the avatar.
      * fromAvatar[spriteType]==true : spriteType is created by the avatar.
      */
-    private boolean fromAvatar[];
+    private boolean[] fromAvatar;
 
     /**
      * Boolean map of sprite types that are unknown.
      * unknownList[spriteType]==false : spriteType is unknown.
      */
-    private boolean unknownList[];
+    private boolean[] unknownList;
 
     /**
      * Boolean map of sprite types that are not hidden.
      * visibleList[playerID][spriteType]==true : sprite.hidden[playerID] = false;
      */
-    private boolean visibleList[][];
+    private boolean[][] visibleList;
 
     /**
      * List of (persistent) observations for all sprites, indexed by sprite ID.
@@ -102,7 +94,7 @@ public class ForwardModel extends Game
 
     /**
      * Constructor for StateObservation. Initializes everything
-     * @param a_gameState
+     * @param a_gameState - initial game state
      */
     public ForwardModel(Game a_gameState, int playerID)
     {
@@ -121,13 +113,12 @@ public class ForwardModel extends Game
      * from a game state (of class Game).
      * @param a_gameState game to take the state from.
      */
-    @SuppressWarnings("unchecked")
     final public void update(Game a_gameState)
     {
         int numSpriteTypes = a_gameState.spriteGroups.length;
-        kill_list = new ArrayList<VGDLSprite>();
+        kill_list = new ArrayList<>();
         bucketList = new Bucket[numSpriteTypes];
-        historicEvents = new TreeSet<Event>();
+        historicEvents = new TreeSet<>();
         shieldedEffects = new ArrayList[numSpriteTypes];
 
         //Copy of sprites from the game.
@@ -139,11 +130,8 @@ public class ForwardModel extends Game
             bucketList[i] = new Bucket();
             spriteGroups[i] = new SpriteGroup(i);
 
-            /**
-             * Index in the sprite group passed to the checkSpriteFeatures method to
-             * identify player in case of avatar sprites (index used as
-             * playerID in the avatars array).
-             */
+            // Index in the sprite group passed to the checkSpriteFeatures method to identify the player in case of
+            // avatar sprites (index used as playerID in the avatars array).
             Iterator<VGDLSprite> spriteIt = a_gameState.spriteGroups[i].getSpriteIterator();
             if(spriteIt != null) while(spriteIt.hasNext())
             {
@@ -181,7 +169,7 @@ public class ForwardModel extends Game
         }
 
         //copy the time effects:
-        this.timeEffects = new TreeSet<TimeEffect>();
+        this.timeEffects = new TreeSet<>();
         Iterator<TimeEffect> timeEffects = a_gameState.timeEffects.descendingIterator();
         while(timeEffects.hasNext())
         {
@@ -230,7 +218,7 @@ public class ForwardModel extends Game
      * Removes an sprite observation.
      * @param sprite sprite to remove.
      */
-    public final void removeSpriteObservation(VGDLSprite sprite)
+    final void removeSpriteObservation(VGDLSprite sprite)
     {
         int spriteId = sprite.spriteID;
 
@@ -322,10 +310,9 @@ public class ForwardModel extends Game
         System.out.println("#########################");
         for(int j = 0; j < observationGrid[0].length; ++j)
         {
-            for(int i = 0; i < observationGrid.length; ++i)
-            {
-                int n = observationGrid[i][j].size();
-                if(n > 0)
+            for (ArrayList<Observation>[] arrayLists : observationGrid) {
+                int n = arrayLists[j].size();
+                if (n > 0)
                     System.out.print(n);
                 else
                     System.out.print(' ');
@@ -382,7 +369,6 @@ public class ForwardModel extends Game
                 if(a.getKeyHandler() != null){
                     this.avatars[a.getPlayerID()] = a;
                 }
-                playerList[itype] = true; //maybe use this
                 break;
             case Types.TYPE_RESOURCE:
                 resList[itype] = true;
@@ -459,7 +445,6 @@ public class ForwardModel extends Game
      * effects, etc). 'this' takes these from a_gameState,
      * @param a_gameState Reference to the original game
      */
-    @SuppressWarnings("unchecked")
     private void initNonVolatile(Game a_gameState)
     {
         //We skip this.resource_colors and sampleRandom.
@@ -479,7 +464,6 @@ public class ForwardModel extends Game
         this.screenSize = a_gameState.screenSize;
         this.size = a_gameState.size;
         this.block_size = a_gameState.block_size;
-        this.MAX_SPRITES = a_gameState.MAX_SPRITES;
         this.no_players = a_gameState.no_players;
         this.no_counters = a_gameState.no_counters;
         this.avatarLastAction = new Types.ACTIONS[no_players];
@@ -503,13 +487,12 @@ public class ForwardModel extends Game
         fromAvatar  = new boolean[a_gameState.spriteGroups.length];
         unknownList = new boolean[a_gameState.spriteGroups.length];
         visibleList = new boolean[no_players][a_gameState.spriteGroups.length];
-        playerList  = new boolean[a_gameState.spriteGroups.length];
 
-        observations = new HashMap<Integer, Observation>();
+        observations = new HashMap<>();
         observationGrid = new ArrayList[screenSize.width/block_size][screenSize.height/block_size];
         for(int i = 0; i < observationGrid.length; ++i)
             for(int j = 0; j < observationGrid[i].length; ++j)
-                observationGrid[i][j] = new ArrayList<Observation>();
+                observationGrid[i][j] = new ArrayList<>();
 
         this.pathf = a_gameState.pathf;
     }
@@ -530,13 +513,13 @@ public class ForwardModel extends Game
      *
      * @param seed the new seed.
      */
-    public void setNewSeed(int seed)
+    void setNewSeed(int seed)
     {
         randomObs = new Random(seed);
     }
 
 
-    /************** Useful functions for the agent *******************/
+    /* ************** Useful functions for the agent ************** */
 
     /**
      * Method used to access the number of players in a game.
@@ -549,7 +532,7 @@ public class ForwardModel extends Game
      * Doesn't update disabled avatars.
      * @param action Action to be performed by the avatar for this game tick.
      */
-    protected void updateAvatars(Types.ACTIONS action, int playerID)
+    private void updateAvatars(Types.ACTIONS action, int playerID)
     {
         MovingAvatar a = avatars[playerID];
         if (!a.is_disabled()) {
@@ -591,7 +574,7 @@ public class ForwardModel extends Game
 
     /**
      * Advances the forward model using the action supplied.
-     * @param action
+     * @param action - action used to advance model
      */
     final public void advance(Types.ACTIONS action) {
         if(!isEnded) {
@@ -606,8 +589,7 @@ public class ForwardModel extends Game
 
     /**
      * Advances the forward model using the actions supplied.
-     * @param actions array of actions of all players (index in array corresponds
-     *                to playerID).
+     * @param actions array of actions of all players (index in array corresponds to playerID).
      */
     final public void advance(Types.ACTIONS[] actions) {
 
@@ -701,7 +683,7 @@ public class ForwardModel extends Game
      * Types.WINNER.NO_WINNER.
      * @return the winner of the game.
      */
-    public Types.WINNER[] getMultiGameWinner() {
+    Types.WINNER[] getMultiGameWinner() {
         Types.WINNER[] winners = new Types.WINNER[no_players];
         for (int i = 0; i < no_players; i++) {
             winners[i] = avatars[i].getWinState();
@@ -718,7 +700,7 @@ public class ForwardModel extends Game
      * Indicates if the game is over or if it hasn't finished yet.
      * @return true if the game is over.
      */
-    public boolean isMultiGameOver() {
+    boolean isMultiGameOver() {
         for (int i = 0; i < no_players; i++) {
             if (getMultiGameWinner()[i] == Types.WINNER.NO_WINNER) return false;
         }
@@ -729,13 +711,13 @@ public class ForwardModel extends Game
      * Returns the world dimensions, in pixels.
      * @return the world dimensions, in pixels.
      */
-    public Dimension getWorldDimension()
+    Dimension getWorldDimension()
     {
         return screenSize;
     }
 
 
-    /** avatar-dependent functions **/
+    /* ************** avatar-dependent functions ************** */
 
     /**
      * Returns the position of the avatar. If the game is finished, we cannot guarantee that
@@ -761,13 +743,13 @@ public class ForwardModel extends Game
      * destroyed). If game finished, this returns 0.
      * @return orientation of the avatar, or 0 if game is over.
      */
-    public double getAvatarSpeed() { return getAvatarSpeed(0); }
+    double getAvatarSpeed() { return getAvatarSpeed(0); }
 
     /**
      * Method overloaded for multi player games.
      * @param playerID ID of the player to query.
      */
-    public double getAvatarSpeed(int playerID) {
+    double getAvatarSpeed(int playerID) {
         if(isEnded)
             return 0;
         return avatars[playerID].speed;
@@ -798,15 +780,15 @@ public class ForwardModel extends Game
      * @param includeNIL true to include Types.ACTIONS.ACTION_NIL in the array of actions.
      * @return the available actions.
      */
-    public ArrayList<Types.ACTIONS> getAvatarActions(boolean includeNIL) { return getAvatarActions(0, includeNIL); }
+    ArrayList<Types.ACTIONS> getAvatarActions(boolean includeNIL) { return getAvatarActions(0, includeNIL); }
 
     /**
      * Method overloaded for multi player games.
      * @param playerID ID of the player to query.
      */
-    public ArrayList<Types.ACTIONS> getAvatarActions(int playerID, boolean includeNIL) {
+    ArrayList<Types.ACTIONS> getAvatarActions(int playerID, boolean includeNIL) {
         if(isEnded || avatars[playerID] == null)
-            return new ArrayList<Types.ACTIONS>();
+            return new ArrayList<>();
         if(includeNIL)
             return avatars[playerID].actionsNIL;
         return avatars[playerID].actions;
@@ -820,15 +802,15 @@ public class ForwardModel extends Game
      * If the avatar has no resources, an empty HashMap is returned.
      * @return resources owned by the avatar.
      */
-    public HashMap<Integer, Integer> getAvatarResources() { return getAvatarResources(0); }
+    HashMap<Integer, Integer> getAvatarResources() { return getAvatarResources(0); }
 
     /**
      * Method overloaded for multi player games.
      * @param playerID ID of the player to query.
      */
-    public HashMap<Integer, Integer> getAvatarResources(int playerID) {
+    HashMap<Integer, Integer> getAvatarResources(int playerID) {
         //Determine how many different resources does the avatar have.
-        HashMap<Integer, Integer> owned = new HashMap<Integer, Integer>();
+        HashMap<Integer, Integer> owned = new HashMap<>();
 
         if(avatars[playerID] == null)
             return owned;
@@ -850,13 +832,13 @@ public class ForwardModel extends Game
      * @return the action that was executed in the real game in the last cycle. ACTION_NIL
      * is returned in the very first game step.
      */
-    public Types.ACTIONS getAvatarLastAction() { return getAvatarLastAction(0); }
+    Types.ACTIONS getAvatarLastAction() { return getAvatarLastAction(0); }
 
     /**
      * Method overloaded for multi player games.
      * @param playerID ID of the player to query.
      */
-    public Types.ACTIONS getAvatarLastAction(int playerID) {
+    Types.ACTIONS getAvatarLastAction(int playerID) {
         if(avatarLastAction[playerID] != null)
             return avatarLastAction[playerID];
         else return Types.ACTIONS.ACTION_NIL;
@@ -867,7 +849,7 @@ public class ForwardModel extends Game
      * Returns the avatar's type. In case it has multiple types, it returns the most specific one.
      * @return the itype of the avatar.
      */
-    public int getAvatarType()
+    int getAvatarType()
     {
         return getAvatarType(0);
     }
@@ -876,7 +858,7 @@ public class ForwardModel extends Game
      * Method overloaded for multi player games.
      * @param playerID ID of the player to query.
      */
-    public int getAvatarType(int playerID)
+    int getAvatarType(int playerID)
     {
         return avatars[playerID].getType();
     }
@@ -886,44 +868,44 @@ public class ForwardModel extends Game
      * mean that the avatar is dead (could be that no health points are in use in that game).
      * @return a numeric value, the amount of remaining health points.
      */
-    public int getAvatarHealthPoints() { return getAvatarHealthPoints(0); }
+    int getAvatarHealthPoints() { return getAvatarHealthPoints(0); }
 
     /**
      * Method overloaded for multi player games.
      * @param playerID ID of the player to query.
      */
-    public int getAvatarHealthPoints(int playerID) { return avatars[playerID].healthPoints; }
+    int getAvatarHealthPoints(int playerID) { return avatars[playerID].healthPoints; }
 
 
     /**
      * Returns the maximum amount of health points.
      * @return the maximum amount of health points the avatar can have.
      */
-    public int getAvatarMaxHealthPoints() { return getAvatarMaxHealthPoints(0); }
+    int getAvatarMaxHealthPoints() { return getAvatarMaxHealthPoints(0); }
 
     /**
      * Method overloaded for multi player games.
      * @param playerID ID of the player to query.
      */
-    public int getAvatarMaxHealthPoints(int playerID) { return avatars[playerID].maxHealthPoints; }
+    int getAvatarMaxHealthPoints(int playerID) { return avatars[playerID].maxHealthPoints; }
 
     /**
      * Returns the limit of health points this avatar can have.
      * @return the limit of health points the avatar can have.
      */
-    public int getAvatarLimitHealthPoints() {return getAvatarLimitHealthPoints(0);}
+    int getAvatarLimitHealthPoints() {return getAvatarLimitHealthPoints(0);}
 
     /**
      * Method overloaded for multi player games.
      * @param playerID ID of the player to query.
      */
-    public int getAvatarLimitHealthPoints(int playerID) {return avatars[playerID].limitHealthPoints;}
+    int getAvatarLimitHealthPoints(int playerID) {return avatars[playerID].limitHealthPoints;}
 
     /**
      * Returns true if the avatar is alive
      * @return true if the avatar is alive
      */
-    public boolean isAvatarAlive()
+    boolean isAvatarAlive()
     {
         return isAvatarAlive(0);
     }
@@ -933,19 +915,17 @@ public class ForwardModel extends Game
      *
      * @param playerID ID of the player to query.
      */
-    public boolean isAvatarAlive(int playerID) {
+    boolean isAvatarAlive(int playerID) {
         return !avatars[playerID].is_disabled();
     }
 
-    /** Methods that return positions of things **/
+    /* ************** Methods that return positions of things ************** */
 
     /**
      * Gets position from the sprites corresponding to the boolean map passed by parameter.
      * @param groupArray boolean map that indicates which sprite types must be considered.
-     * @return List of arrays with Observations. Each entry in the array corresponds to a different
-     * sprite type.
+     * @return List of arrays with Observations. Each entry in the array corresponds to a different sprite type.
      */
-    @SuppressWarnings("unchecked")
     private ArrayList<Observation>[] getPositionsFrom(boolean[] groupArray, Vector2d refPosition)
     {
         //First, get how many types we have. Need to consider hidden sprites out.
@@ -973,7 +953,7 @@ public class ForwardModel extends Game
             //For each one of the sprite types that belong to the specified category
             if(groupArray[i] && visibleList[playerID][i])
             {
-                observations[idx] = new ArrayList<Observation>();
+                observations[idx] = new ArrayList<>();
                 Iterator<VGDLSprite> spriteIt = spriteGroups[i].getSpriteIterator();
                 if(spriteIt != null) while(spriteIt.hasNext())
                 {
@@ -1011,7 +991,7 @@ public class ForwardModel extends Game
      * Returns the list of historic events happened in this game so far.
      * @return list of historic events happened in this game so far.
      */
-    public TreeSet<Event> getEventsHistory()
+    TreeSet<Event> getEventsHistory()
     {
         return historicEvents;
     }
@@ -1023,8 +1003,7 @@ public class ForwardModel extends Game
      * distance to the avatar. Each Observation holds the position, unique id and
      * sprite id of that particular sprite.
      *
-     * @param refPosition Reference position to use when sorting this array,
-     *                    by ascending distance to this point.
+     * @param refPosition Reference position to use when sorting this array, by ascending distance to this point.
      * @return Observations of NPCs in the game.
      */
     public ArrayList<Observation>[] getNPCPositions(Vector2d refPosition)
@@ -1034,9 +1013,8 @@ public class ForwardModel extends Game
 
     /**
      * Observations of static objects in the game.
-     * @param refPosition Reference position to use when sorting this array,
-     *                    by ascending distance to this point.
-     * @return a list with the observations of static objects in the game..
+     * @param refPosition Reference position to use when sorting this array, by ascending distance to this point.
+     * @return a list with the observations of static objects in the game.
      */
     public ArrayList<Observation>[] getImmovablePositions(Vector2d refPosition) {
         return getPositionsFrom(immList, refPosition);
@@ -1044,28 +1022,25 @@ public class ForwardModel extends Game
 
     /**
      * Returns a list with observations of sprites that move, but are NOT NPCs.
-     * @param refPosition Reference position to use when sorting this array,
-     *                    by ascending distance to this point.
+     * @param refPosition Reference position to use when sorting this array, by ascending distance to this point.
      * @return a list with observations of sprites that move, but are NOT NPCs.
      */
-    public ArrayList<Observation>[] getMovablePositions(Vector2d refPosition) {
+    ArrayList<Observation>[] getMovablePositions(Vector2d refPosition) {
         return getPositionsFrom(movList, refPosition);
     }
 
-    /*
-    * Returns a list with observations of resources.
-     * @param refPosition Reference position to use when sorting this array,
-     *                    by ascending distance to this point.
-    * @return a list with observations of resources.
-    */
-    public ArrayList<Observation>[] getResourcesPositions(Vector2d refPosition) {
+    /**
+     * Returns a list with observations of resources.
+     * @param refPosition Reference position to use when sorting this array, by ascending distance to this point.
+     * @return a list with observations of resources.
+     */
+    ArrayList<Observation>[] getResourcesPositions(Vector2d refPosition) {
         return getPositionsFrom(resList, refPosition);
     }
 
-    /*
+    /**
      * Returns a list with observations of portals.
-     * @param refPosition Reference position to use when sorting this array,
-     *                    by ascending distance to this point.
+     * @param refPosition Reference position to use when sorting this array, by ascending distance to this point.
      * @return a list with observations of portals.
      */
     public ArrayList<Observation>[] getPortalsPositions(Vector2d refPosition) {
@@ -1074,11 +1049,10 @@ public class ForwardModel extends Game
 
     /**
      * Returns a list of observations of objects created by the avatar's actions.
-     * @param refPosition Reference position to use when sorting this array,
-     *                    by ascending distance to this point.
+     * @param refPosition Reference position to use when sorting this array, by ascending distance to this point.
      * @return a list with observations of sprites.
      */
-    public ArrayList<Observation>[] getFromAvatarSpPositions(Vector2d refPosition)
+    ArrayList<Observation>[] getFromAvatarSpPositions(Vector2d refPosition)
     {
         return getPositionsFrom(fromAvatar, refPosition);
     }
@@ -1087,7 +1061,7 @@ public class ForwardModel extends Game
     //Must override this:
     @Override
     public void buildStringLevel(String[] levelString, int randomSeed) {
-        throw new RuntimeException("buildLevel should not be called in this instance.");
+        throw new RuntimeException("BuildLevel should not be called in this instance.");
     }
 
 }

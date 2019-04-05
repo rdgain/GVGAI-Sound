@@ -10,9 +10,9 @@ public class GVGReplayer {
     public static String game;
     public static String level;
     public static String actionFile;
-    public static int delay;
+    private static int delay;
 
-    public static void printHelp()
+    private static void printHelp()
     {
         System.out.println("Usage: java GVGReplayer <params>");
         System.out.println("\t-g Game file to play in.\n" +
@@ -28,12 +28,13 @@ public class GVGReplayer {
                 "\t\t[Optional]\n" +
                 "\t\t[Default: 0ms (no delay)]\n" +
                 "\t\t[Ex: -d 15]\n");
-        System.out.printf("\tComplete example:\n" +
-                "\t\tjava GVGReplayer -g examples/gridphysics/aliens.txt -l examples/gridphysics/aliens_lvl0.txt -a actionsFile_aliens_lvl0.txt -d 10");
+        System.out.println("\tComplete example:\n" +
+                "\t\tjava GVGReplayer -g examples/gridphysics/aliens.txt -l examples/gridphysics/aliens_lvl0.txt -a " +
+                "actionsFile_aliens_lvl0.txt -d 10");
 
     }
 
-    public static void parseParameter(String arg1, String arg2)
+    private static void parseParameter(String arg1, String arg2)
     {
         if(arg1.equalsIgnoreCase("-g"))
             game = arg2;
@@ -45,7 +46,7 @@ public class GVGReplayer {
             delay = Integer.parseInt(arg2);
     }
 
-    public static void main(String args[])
+    public static void main(String[] args)
     {
         if(args.length < 6 || (args.length % 2 != 0))
         {
