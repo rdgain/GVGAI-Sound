@@ -48,7 +48,7 @@ public class SpriteCounter extends Termination
 
     @Override
     public ArrayList<String> getTerminationSprites() {
-        ArrayList<String> result = new ArrayList<String>();
+        ArrayList<String> result = new ArrayList<>();
         result.add(stype);
 
         return result;

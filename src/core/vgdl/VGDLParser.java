@@ -21,6 +21,7 @@ import core.logging.Message;
  * Created with IntelliJ IDEA. User: Diego Date: 04/10/13 Time: 16:52 This is a
  * Java port from Tom Schaul's VGDL - https://github.com/schaul/py-vgdl
  */
+@SuppressWarnings("unchecked")
 public class VGDLParser {
 	/**
 	 * Game which description is being read.
@@ -30,7 +31,7 @@ public class VGDLParser {
 	/**
 	 * Current set through the game description file.
 	 */
-	public int currentSet;
+	private int currentSet;
 
 	/**
 	 * Temporal structure to hold spriteOrder (before the final array is created
@@ -63,17 +64,16 @@ public class VGDLParser {
 	 */
 	public VGDLParser() {
 		currentSet = Types.VGDL_GAME_DEF;
-		spriteOrderTmp = new ArrayList<Integer>();
-		singletonTmp = new ArrayList<Integer>();
-		constructors = new HashMap<Integer, SpriteContent>();
+		spriteOrderTmp = new ArrayList<>();
+		singletonTmp = new ArrayList<>();
+		constructors = new HashMap<>();
 		logger = Logger.getInstance();
 	}
 
 	/**
 	 * Parses a game passed whose file is passed by parameter.
 	 *
-	 * @param gamedesc_file
-	 *            filename of the file containing the game
+	 * @param gamedesc_file filename of the file containing the game
 	 * @return the game created
 	 */
 	public Game parseGame(String gamedesc_file) {
@@ -102,8 +102,7 @@ public class VGDLParser {
 	/**
 	 * Parses a game passed whose file is passed by parameter.
 	 *
-	 * @param gamedesc_file
-	 *            filename of the file containing the game
+	 * @param gamedesc_file filename of the file containing the game
 	 * @return the game created
 	 */
 	public Game parseGameWithParameters(String gamedesc_file, HashMap<String, ParameterContent> parameters) {
@@ -130,38 +129,42 @@ public class VGDLParser {
 	/**
 	 * Parses the parameter nodes in VGDL description for game spaces.
 	 *
-	 * @param rootNode
-	 *            the root VGDL node.
+	 * @param rootNode the root VGDL node.
 	 */
 	private void parseParameterNodes(Node rootNode) {
 		// We parse the parameter set first:
 		for (Node n : rootNode.children) {
 			if (n.content.identifier.equals("ParameterSet")) {
 				parseParameterSet(n.children);
-				if (n.content.identifier.equals("SpriteSet")) {
-					try {
-						parseSpriteSet(n.children);
-					} catch (Exception e) {
-						logger.addMessage(new Message(Message.ERROR, "Sprite Set Error: " + e.toString()));
-					}
-				} else if (n.content.identifier.equals("InteractionSet")) {
-					try {
-						parseInteractionSet(n.children);
-					} catch (Exception e) {
-						logger.addMessage(new Message(Message.ERROR, "Interaction Set Error: " + e.getMessage()));
-					}
-				} else if (n.content.identifier.equals("LevelMapping")) {
-					try {
-						parseLevelMapping(n.children);
-					} catch (Exception e) {
-						logger.addMessage(new Message(Message.ERROR, "Level Mapping Error: " + e.toString()));
-					}
-				} else if (n.content.identifier.equals("TerminationSet")) {
-					try {
-						parseTerminationSet(n.children);
-					} catch (Exception e) {
-						logger.addMessage(new Message(Message.ERROR, "Termination Set Error: " + e.toString()));
-					}
+				switch (n.content.identifier) {
+					case "SpriteSet":
+						try {
+							parseSpriteSet(n.children);
+						} catch (Exception e) {
+							logger.addMessage(new Message(Message.ERROR, "Sprite Set Error: " + e.toString()));
+						}
+						break;
+					case "InteractionSet":
+						try {
+							parseInteractionSet(n.children);
+						} catch (Exception e) {
+							logger.addMessage(new Message(Message.ERROR, "Interaction Set Error: " + e.getMessage()));
+						}
+						break;
+					case "LevelMapping":
+						try {
+							parseLevelMapping(n.children);
+						} catch (Exception e) {
+							logger.addMessage(new Message(Message.ERROR, "Level Mapping Error: " + e.toString()));
+						}
+						break;
+					case "TerminationSet":
+						try {
+							parseTerminationSet(n.children);
+						} catch (Exception e) {
+							logger.addMessage(new Message(Message.ERROR, "Termination Set Error: " + e.toString()));
+						}
+						break;
 				}
 			}
 			// logger.printMessages();
@@ -171,20 +174,24 @@ public class VGDLParser {
 	/**
 	 * Parses the nodes in VGDL description.
 	 *
-	 * @param rootNode
-	 *            the root VGDL node.
+	 * @param rootNode the root VGDL node.
 	 */
 	private void parseNodes(Node rootNode) throws Exception {
 		// Parse here the normal blocks of VGDL.
 		for (Node n : rootNode.children) {
-			if (n.content.identifier.equals("SpriteSet")) {
-				parseSpriteSet(n.children);
-			} else if (n.content.identifier.equals("InteractionSet")) {
-				parseInteractionSet(n.children);
-			} else if (n.content.identifier.equals("LevelMapping")) {
-				parseLevelMapping(n.children);
-			} else if (n.content.identifier.equals("TerminationSet")) {
-				parseTerminationSet(n.children);
+			switch (n.content.identifier) {
+				case "SpriteSet":
+					parseSpriteSet(n.children);
+					break;
+				case "InteractionSet":
+					parseInteractionSet(n.children);
+					break;
+				case "LevelMapping":
+					parseLevelMapping(n.children);
+					break;
+				case "TerminationSet":
+					parseTerminationSet(n.children);
+					break;
 			}
 		}
 	}
@@ -195,11 +202,12 @@ public class VGDLParser {
 	 * @param spriteStruct	the current structure of the sprite set
 	 * @param sprites		the current sprites
 	 */
-	public void parseSpriteSet(Game currentGame, HashMap<String, ArrayList<String>> spriteStruct, HashMap<String, String> sprites){
+	public void parseSpriteSet(Game currentGame, HashMap<String, ArrayList<String>> spriteStruct,
+							   HashMap<String, String> sprites){
 		this.game = currentGame;
 		String template = "    ";
 
-		ArrayList<String> msprites = new ArrayList<String>();
+		ArrayList<String> msprites = new ArrayList<>();
 		msprites.add("SpriteSet");
 		for(String key:spriteStruct.keySet()){
 			msprites.add(template + key + " >");
@@ -217,7 +225,7 @@ public class VGDLParser {
 			msprites.add(template + value.trim());
 		}
 
-		Node spriteNode = indentTreeParser(msprites.toArray(new String[msprites.size()]));
+		Node spriteNode = indentTreeParser(msprites.toArray(new String[0]));
 		try {
 			parseSpriteSet(spriteNode.children);
 		} catch (Exception e) {
@@ -228,13 +236,9 @@ public class VGDLParser {
 	/**
 	 * parse both rules and termination and add them to the current game object
 	 *
-	 * @param currentGame
-	 *            the current game object
-	 * @param rules
-	 *            the current interaction set as in the VGDL file
-	 * @param terminations
-	 *            the current termination set as in the VGDL file
-	 * @throws Exception
+	 * @param currentGame the current game object
+	 * @param rules the current interaction set as in the VGDL file
+	 * @param terminations the current termination set as in the VGDL file
 	 */
 	public void parseInteractionTermination(Game currentGame, String[] rules, String[] terminations) {
 		this.game = currentGame;
@@ -263,8 +267,7 @@ public class VGDLParser {
 	/**
 	 * Builds the tree structure that defines the game.
 	 *
-	 * @param lines
-	 *            array with the lines read from the game description file.
+	 * @param lines array with the lines read from the game description file.
 	 * @return the root of the final game tree
 	 */
 	public Node indentTreeParser(String[] lines) {
@@ -275,10 +278,10 @@ public class VGDLParser {
 		// set the overall line number at 0
 		int lineNumber = 0;
 		for (String line : lines) {
-			line.replaceAll("\t", tabTemplate);
-			line.replace('(', ' ');
-			line.replace(')', ' ');
-			line.replace(',', ' ');
+			line = line.replaceAll("\t", tabTemplate);
+			line = line.replace('(', ' ');
+			line = line.replace(')', ' ');
+			line = line.replace(',', ' ');
 
 			// remove comments starting with "#"
 			if (line.contains("#"))
@@ -302,6 +305,7 @@ public class VGDLParser {
 			lineNumber++;
 		}
 
+		assert last != null;
 		return last.getRoot();
 	}
 
@@ -309,8 +313,7 @@ public class VGDLParser {
 	 * Updates the set we are in (game-def, spriteset, interactionset,
 	 * levelmapping, terminationset)
 	 *
-	 * @param line
-	 *            line to read
+	 * @param line line to read
 	 */
 	private void updateSet(String line) {
 		if (line.equalsIgnoreCase("SpriteSet"))
@@ -329,15 +332,14 @@ public class VGDLParser {
 	 * Parses the sprite set, and then initializes the game structures for the
 	 * sprites.
 	 *
-	 * @param elements
-	 *            children of the root node of the game description sprite set.
+	 * @param elements children of the root node of the game description sprite set.
 	 */
 	private void parseSpriteSet(ArrayList<Node> elements) {
 		// We need these 2 here:
 		spriteOrderTmp.add(VGDLRegistry.GetInstance().getRegisteredSpriteValue("wall"));
 		spriteOrderTmp.add(VGDLRegistry.GetInstance().getRegisteredSpriteValue("avatar"));
 
-		_parseSprites(elements, null, new HashMap<String, String>(), new ArrayList<String>());
+		_parseSprites(elements, null, new HashMap<>(), new ArrayList<>());
 
 		// Set the order of sprites.
 		game.initSprites(spriteOrderTmp, singletonTmp, constructors);
@@ -349,7 +351,6 @@ public class VGDLParser {
 	 * @param parentclass	previous parent in the tree (root have null parent)
 	 */
 	private void modifySpriteOrder(ArrayList<Node> elements, String parentclass) {
-		String prevParentClass = parentclass;
 		for (Node el : elements) {
 			SpriteContent sc = (SpriteContent) el.content;
 			if (!sc.is_definition) // This checks if line contains ">"
@@ -368,10 +369,8 @@ public class VGDLParser {
 			// If this is a leaf node, set the information on Game to create
 			// objects of this type.
 			if (el.children.size() == 0) {
-				if (spriteOrderTmp.contains(intId)) {
-					// last one counts
-					spriteOrderTmp.remove(intId);
-				}
+				// last one counts
+				spriteOrderTmp.remove(intId);
 				spriteOrderTmp.add(intId);
 			} else {
 				// This is the parent class of the next.
@@ -398,18 +397,11 @@ public class VGDLParser {
 	/**
 	 * Recursive method to parse the tree of sprites.
 	 *
-	 * @param elements
-	 *            set of sibling nodes
-	 * @param parentclass
-	 *            String that identifies the class of the parent node. If null,
-	 *            no class defined yet.
-	 * @param parentargs
-	 *            Map with the arguments of the parent, that are inherited to
-	 *            all its children.
-	 * @param parenttypes
-	 *            List of types the parent of elements belong to.
+	 * @param elements set of sibling nodes
+	 * @param parentclass String that identifies the class of the parent node. If null, no class defined yet.
+	 * @param parentargs Map with the arguments of the parent, that are inherited to all its children.
+	 * @param parenttypes List of types the parent of elements belong to.
 	 */
-	@SuppressWarnings("unchecked")
 	private void _parseSprites(ArrayList<Node> elements, String parentclass, HashMap<String, String> parentargs,
 							   ArrayList<String> parenttypes) {
 		HashMap<String, String> args = (HashMap<String, String>) parentargs.clone();
@@ -462,10 +454,8 @@ public class VGDLParser {
 					System.out
 							.println("Defining: " + identifier + " " + sc.referenceClass + " " + el.content.toString());
 
-				if (spriteOrderTmp.contains(intId)) {
-					// last one counts
-					spriteOrderTmp.remove(intId);
-				}
+				// last one counts
+				spriteOrderTmp.remove(intId);
 				spriteOrderTmp.add(intId);
 
 				// Reset the parameters to the ones from the parent
@@ -501,11 +491,9 @@ public class VGDLParser {
 	/**
 	 * Parses the interaction set.
 	 *
-	 * @param elements
-	 *            all interactions defined for the game.
-	 * @throws Exception
+	 * @param elements all interactions defined for the game.
+	 * @throws Exception if interaction set could not be parsed
 	 */
-	@SuppressWarnings("unchecked")
 	private void parseInteractionSet(ArrayList<Node> elements) throws Exception {
 		for (Node n : elements) {
 			InteractionContent ic = (InteractionContent) n.content;
@@ -514,12 +502,10 @@ public class VGDLParser {
 			{
 				Effect ef = VGDLFactory.GetInstance().createEffect(game, ic);
 
-				// Get the identifiers of the first sprite taking part in the
-				// effect.
+				// Get the identifiers of the first sprite taking part in the effect.
 				int obj1 = VGDLRegistry.GetInstance().getRegisteredSpriteValue(ic.object1);
 
-				// The second identifier comes from a list of sprites. We go one
-				// by one.
+				// The second identifier comes from a list of sprites. We go one by one.
 				for (String obj2Str : ic.object2) {
 					int obj2 = VGDLRegistry.GetInstance().getRegisteredSpriteValue(obj2Str);
 
@@ -530,8 +516,7 @@ public class VGDLParser {
 
 						ArrayList<Effect> collEffects = game.getCollisionEffects(obj1, obj2);
 
-						// Add the effects as many times as indicated in its
-						// 'repeat' field (1 by default).
+						// Add the effects as many times as indicated in its 'repeat' field (1 by default).
 						for (int r = 0; r < ef.repeat; ++r)
 							collEffects.add(ef);
 
@@ -539,7 +524,7 @@ public class VGDLParser {
 							System.out.println(
 									"Defining interaction " + ic.object1 + "+" + obj2Str + " > " + ic.function);
 
-					} else if (obj1 == -1 || obj2 == -1) {
+					} else {
 
 						// EOS or a TIME Effect (since VGDL 2.0)
 						if (obj2Str.equalsIgnoreCase("EOS")) {
@@ -550,10 +535,10 @@ public class VGDLParser {
 							game.getDefinedEosEffects().add(obj2);
 							game.getEosEffects(obj2).add(ef);
 
-						} else if (ic.object1.equalsIgnoreCase("TIME") || obj2Str.equalsIgnoreCase("TIME")) {
+						} else if (ic.object1.equalsIgnoreCase("TIME") ||
+								obj2Str.equalsIgnoreCase("TIME")) {
 							game.addTimeEffect((TimeEffect) ef);
-							// unknown sprite other than an EOS or TIME effect
-							// is an error
+							// unknown sprite other than an EOS or TIME effect is an error
 						} else {
 							throw new Exception("[PARSE ERROR] interaction entry references unknown sprite. Line: "
 									+ ic.lineNumber + " : " + ic.line);
@@ -580,8 +565,7 @@ public class VGDLParser {
 	/**
 	 * Parses the level mapping.
 	 *
-	 * @param elements
-	 *            all mapping units.
+	 * @param elements all mapping units.
 	 */
 	private void parseParameterSet(ArrayList<Node> elements) {
 		for (Node n : elements) {
@@ -595,8 +579,7 @@ public class VGDLParser {
 	/**
 	 * Parses the level mapping.
 	 *
-	 * @param elements
-	 *            all mapping units.
+	 * @param elements all mapping units.
 	 */
 	private void parseLevelMapping(ArrayList<Node> elements) {
 		for (Node n : elements) {
@@ -609,9 +592,8 @@ public class VGDLParser {
 	/**
 	 * Parses the termination set.
 	 *
-	 * @param elements
-	 *            all terminations defined for the game.
-	 * @throws Exception
+	 * @param elements all terminations defined for the game.
+	 * @throws Exception if termination set could not be parsed
 	 */
 	private void parseTerminationSet(ArrayList<Node> elements) throws Exception {
 		for (Node n : elements) {

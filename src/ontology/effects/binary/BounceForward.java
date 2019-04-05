@@ -45,6 +45,5 @@ public class BounceForward extends Effect
         sprite1.physics.activeMovement(sprite1, new Direction(dir.x, dir.y), sprite2.speed);
         //sprite1.lastrect = r;
         sprite1.orientation = new Direction(dir.x, dir.y);
-        game._updateCollisionDict(sprite1);
     }
 }

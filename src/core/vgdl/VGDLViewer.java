@@ -74,7 +74,7 @@ public class VGDLViewer extends JComponent
         paintWithGraphics(g);
     }
 
-    public void paintWithGraphics(Graphics2D g) {
+    private void paintWithGraphics(Graphics2D g) {
         //For a better graphics, enable this: (be aware this could bring performance issues depending on your HW & OS).
         g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
@@ -93,7 +93,7 @@ public class VGDLViewer extends JComponent
 
                 }
             }
-        }catch(Exception e) {}
+        } catch(Exception ignored) {}
 
         g.setColor(Types.BLACK);
         player.draw(g);
@@ -133,7 +133,7 @@ public class VGDLViewer extends JComponent
         return size;
     }
 
-    public void saveImage(String fileName)  {
+    private void saveImage(String fileName)  {
         try {
             BufferedImage bi = new BufferedImage( (int) size.getWidth(), (int) size.getHeight(), BufferedImage.TYPE_INT_ARGB);
             Graphics2D graphics = bi.createGraphics();

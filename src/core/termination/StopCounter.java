@@ -16,11 +16,12 @@ import java.util.ArrayList;
 
 // Anti termination: this prevents counter terminations from triggering if certain conditions are met.
 
+@SuppressWarnings("WeakerAccess")
 public class StopCounter extends Termination
 {
     //TODO if needed: Theoretically, we could have an array of types here... to be done.
     public String stype1, stype2, stype3;
-    public int itype1=-1, itype2=-1, itype3=-1;
+    public int itype1 = -1, itype2 = -1, itype3 = -1;
     public boolean min = false;
 
     public StopCounter(){}
@@ -77,7 +78,7 @@ public class StopCounter extends Termination
     
     @Override
 	public ArrayList<String> getTerminationSprites() {
-		ArrayList<String> result = new ArrayList<String>();
+		ArrayList<String> result = new ArrayList<>();
 		if(stype1 != null) result.add(stype1);
         if(stype2 != null) result.add(stype2);
         if(stype3 != null) result.add(stype3);

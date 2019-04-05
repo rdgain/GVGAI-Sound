@@ -29,7 +29,7 @@ public class ParameterIntContent extends ParameterContent {
     private int finalValue;
 
 
-    public ParameterIntContent(ParameterContent pc, String line) {
+    ParameterIntContent(ParameterContent pc, String line) {
         this.line = line;
         this.parameters = pc.parameters;
         this.identifier = pc.identifier;

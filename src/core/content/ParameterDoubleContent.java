@@ -29,7 +29,7 @@ public class ParameterDoubleContent extends ParameterContent {
     private double finalValue;
 
 
-    public ParameterDoubleContent(ParameterContent pc, String line) {
+    ParameterDoubleContent(ParameterContent pc, String line) {
         this.line = line;
         this.parameters = pc.parameters;
         this.identifier = pc.identifier;

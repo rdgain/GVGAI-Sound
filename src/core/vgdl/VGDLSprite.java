@@ -8,7 +8,6 @@ import java.awt.Polygon;
 import java.awt.Rectangle;
 import java.awt.geom.AffineTransform;
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -36,6 +35,7 @@ import tools.Vector2d;
  * Time: 10:59
  * This is a Java port from Tom Schaul's VGDL - https://github.com/schaul/py-vgdl
  */
+@SuppressWarnings("WeakerAccess")
 public abstract class VGDLSprite {
 
     /**
@@ -92,7 +92,6 @@ public abstract class VGDLSprite {
      * Id of the type if physics this sprite responds to.
      */
     public int physicstype;
-
 
     /**
      * Reference to the physics object this sprite belongs to.
@@ -193,12 +192,12 @@ public abstract class VGDLSprite {
     /**
      * remaining frame speed
      */
-    public double frameRemaining;
+    private double frameRemaining;
     
     /**
      * the current frame to be drawn
      */
-    public int currentFrame;
+    private int currentFrame;
 
     /**
      * If true, this sprite's functionality is disabled.
@@ -372,11 +371,11 @@ public abstract class VGDLSprite {
         isFirstTick = true;
         disabled = false;
         limitHealthPoints = 1000;
-        resources = new TreeMap<Integer, Integer>();
-        itypes = new ArrayList<Integer>();
+        resources = new TreeMap<>();
+        itypes = new ArrayList<>();
         rotation = 0.0;
         max_speed = -1.0;
-        images = new HashMap<String,ArrayList<Image>>();
+        images = new HashMap<>();
 
         this.size = size;
         determinePhysics(physicstype, size);
@@ -417,7 +416,7 @@ public abstract class VGDLSprite {
 
     /**
      * Parses parameters for the sprite, received as a SpriteContent object.
-     * @param content
+     * @param content - sprite content
      */
     public void parseParameters(SpriteContent content) {
 
@@ -435,9 +434,8 @@ public abstract class VGDLSprite {
      * Determines the physics type of the game, creating the Physics objects that performs the calculations.
      * @param physicstype identifier of the physics type.
      * @param size dimensions of the sprite.
-     * @return the phyics object.
      */
-    private Physics determinePhysics(int physicstype, Dimension size) {
+    private void determinePhysics(int physicstype, Dimension size) {
         this.physicstype = physicstype;
         switch (physicstype) {
             case Types.GRID:
@@ -447,7 +445,6 @@ public abstract class VGDLSprite {
                 physics = new ContinuousPhysics();
                 break;
         }
-        return physics;
     }
 
     /**
@@ -503,11 +500,10 @@ public abstract class VGDLSprite {
             if(allImages.size() > 0) {
                 if (frameRate > 0 && frameRemaining <= 0) {
 
-                    if (allImages.size() > 0) {
-                        currentFrame = (currentFrame + 1) % allImages.size();
-                        frameRemaining = frameRate;
-                        image = allImages.get(currentFrame);
-                    }
+                    allImages.size();
+                    currentFrame = (currentFrame + 1) % allImages.size();
+                    frameRemaining = frameRate;
+                    image = allImages.get(currentFrame);
 
                 } else if (!autotiling) {
 
@@ -567,15 +563,13 @@ public abstract class VGDLSprite {
     /**
      * 
      * @param rot the rotation of the sprite
-     * @return true if rotation could be changed
      */
-    public boolean _updateRotation(double rot)
+    protected void _updateRotation(double rot)
     {
         rotation = rot;
-        return true;
     }
 
-    public void updateBucket()
+    private void updateBucket()
     {
         bucket = rect.y / rect.height;
         bucketSharp = (rect.y % rect.height) == 0;
@@ -699,8 +693,7 @@ public abstract class VGDLSprite {
 
             if (game.humanPlayer[0] && game.humanPlayer[1] || !game.humanPlayer[0] && !game.humanPlayer[1]) {
                 if (invis0 == invis1) show = !invis0;
-                else if (color == Types.DARKGRAY) show = false;
-                else show = !invis0 || !invis1;
+                else show = color != Types.DARKGRAY;
             } else
                 show = displayP1 || displayP2;
         } else
@@ -713,9 +706,9 @@ public abstract class VGDLSprite {
             if (!is_avatar || !is_oriented)
             {
 	            if(image != null)
-	                _drawImage(gphx, game, r);
+	                _drawImage(gphx, r);
 	            else
-	                _draw(gphx, game, r);
+	                _draw(gphx, r);
 	
 	            if(resources.size() > 0)
 	            {
@@ -748,7 +741,7 @@ public abstract class VGDLSprite {
      * Overwritting intersects to check if we are on ground.
      * @return true if it directly intersects with sp (as in the normal case), but additionally checks for on_ground condition.
      */
-    public boolean groundIntersects (VGDLSprite sp)
+    protected boolean groundIntersects(VGDLSprite sp)
     {
         boolean normalIntersect = this.rect.intersects(sp.rect);
 
@@ -778,18 +771,11 @@ public abstract class VGDLSprite {
         Polygon p = Utils.triPoints(r, orientation);
 
         // Rotation information
-
-        if(shrinkfactor != 1)
-        {
-            r.width *= shrinkfactor;
-            r.height *= shrinkfactor;
-            r.x += (rect.width-r.width)/2;
-            r.y += (rect.height-r.height)/2;
-        }
+        _shrinkSprite(r);
 
         int w = image.getWidth(null);
         int h = image.getHeight(null);
-        float scale = (float)r.width/w; //assume all sprites are quadratic.
+        float scale = (float) r.width/w;  // Assume all sprites are quadratic.
 
         AffineTransform trans = new AffineTransform();
         trans.translate(r.x, r.y);
@@ -814,28 +800,19 @@ public abstract class VGDLSprite {
     /**
      * Draws the not-oriented part of the sprite
      * @param gphx graphics object to draw in.
-     * @param game reference to the game that is being played now.
      */
-    public void _draw(Graphics2D gphx, Game game, Rectangle r)
+    public void _draw(Graphics2D gphx, Rectangle r)
     {
-
-        if(shrinkfactor != 1)
-        {
-            r.width *= shrinkfactor;
-            r.height *= shrinkfactor;
-            r.x += (rect.width-r.width)/2;
-            r.y += (rect.height-r.height)/2;
-        }
-
+        _shrinkSprite(r);
         gphx.setColor(color);
 
         if(is_avatar)
         {
             gphx.fillOval((int) r.getX(), (int) r.getY(), r.width, r.height);
-        }else if(!is_static)
+        } else if(!is_static)
         {
             gphx.fillRect(r.x, r.y, r.width, r.height);
-        }else
+        } else
         {
             gphx.fillRect(r.x, r.y, r.width, r.height);
         }
@@ -843,24 +820,17 @@ public abstract class VGDLSprite {
     }
 
     /**
-     * Draws the not-oriented part of the sprite, as an image. this.image must be not null.
+     * Draws the not-oriented part of the sprite, as an image. This image must be not null.
      * @param gphx graphics object to draw in.
-     * @param game reference to the game that is being played now.
      */
-    public void _drawImage(Graphics2D gphx, Game game, Rectangle r)
+    public void _drawImage(Graphics2D gphx, Rectangle r)
     {
-        if(shrinkfactor != 1)
-        {
-            r.width *= shrinkfactor;
-            r.height *= shrinkfactor;
-            r.x += (rect.width-r.width)/2;
-            r.y += (rect.height-r.height)/2;
-        }
+        _shrinkSprite(r);
 
         int w = image.getWidth(null);
         int h = image.getHeight(null);
-        float scaleX = (float)r.width/w;
-        float scaleY = (float)r.height/h;
+        float scaleX = (float) r.width/w;
+        float scaleY = (float) r.height/h;
 
         gphx.drawImage(image, r.x, r.y, (int) (w*scaleX), (int) (h*scaleY), null);
 
@@ -869,7 +839,20 @@ public abstract class VGDLSprite {
         //if(bucketSharp)   gphx.drawString("["+bucket+"]",r.x, r.y);
         //else              gphx.drawString("{"+bucket+"}",r.x, r.y);
 
+    }
 
+    /**
+     * Shrinks sprite according to the shrink factor.
+     * @param r - sprite rectangle
+     */
+    private void _shrinkSprite(Rectangle r) {
+        if(shrinkfactor != 1)
+        {
+            r.width *= shrinkfactor;
+            r.height *= shrinkfactor;
+            r.x += (rect.width-r.width)/2;
+            r.y += (rect.height-r.height)/2;
+        }
     }
 
     /**
@@ -893,17 +876,16 @@ public abstract class VGDLSprite {
                 double wiggle = r.width / 10.0f;
                 double prop = Math.max(0, Math.min(1, resValue / (double) (game.getResourceLimit(resType))));
 
-                Rectangle filled = new Rectangle((int) (r.x + wiggle / 2), (int) offset, (int) (prop * (r.width - wiggle)), (int) barheight);
-                Rectangle rest = new Rectangle((int) (r.x + wiggle / 2 + prop * (r.width - wiggle)), (int) offset, (int) ((1 - prop) * (r.width - wiggle)), (int) barheight);
+                Rectangle filled = new Rectangle((int) (r.x + wiggle / 2), (int) offset,
+                        (int) (prop * (r.width - wiggle)), (int) barheight);
+                Rectangle rest = new Rectangle((int) (r.x + wiggle / 2 + prop * (r.width - wiggle)), (int) offset,
+                        (int) ((1 - prop) * (r.width - wiggle)), (int) barheight);
 
                 gphx.setColor(game.getResourceColor(resType));
-                gphx.fillRect(filled.x, filled.y, filled.width, filled.height);
-                gphx.setColor(Types.BLACK);
-                gphx.fillRect(rest.x, rest.y, rest.width, rest.height);
+                _drawRect(gphx, filled, rest);
                 offset += barheight;
             }
         }
-
     }
 
 
@@ -913,7 +895,7 @@ public abstract class VGDLSprite {
      * @param game game being played at the moment.
      * @param r rectangle of this sprite.
      */
-    protected void _drawHealthBar(Graphics2D gphx, Game game, Rectangle r)
+    private void _drawHealthBar(Graphics2D gphx, Game game, Rectangle r)
     {
         int maxHP = maxHealthPoints;
         if(limitHealthPoints != 1000)
@@ -938,6 +920,13 @@ public abstract class VGDLSprite {
             gphx.setColor(color);
         else
             gphx.setColor(Types.RED);
+        _drawRect(gphx, filled, rest);
+    }
+
+    /**
+     * Draws a rectangle with a black border, resource-type bar, some filled.
+     */
+    private void _drawRect(Graphics2D gphx, Rectangle filled, Rectangle rest) {
         gphx.fillRect(filled.x, filled.y, filled.width, filled.height);
         gphx.setColor(Types.BLACK);
         gphx.fillRect(rest.x, rest.y, rest.width, rest.height);
@@ -996,6 +985,7 @@ public abstract class VGDLSprite {
             return;
         }
 
+        assert images != null;
         if(images.size() == 0 && str != null)
         {
             //There is autotiling (disabled now) or animations
@@ -1032,7 +1022,7 @@ public abstract class VGDLSprite {
 
                     for(Direction dir : directions) {
                         String strDir = Types.v2DirStr(dir.getVector());
-                        ArrayList<Image> theImages = new ArrayList<Image>();
+                        ArrayList<Image> theImages = new ArrayList<>();
                         String image_file = base_image_file + "_" + strDir + ".png";
                         onlyImage = getImage(image_file);
                         theImages.add(onlyImage);
@@ -1065,8 +1055,6 @@ public abstract class VGDLSprite {
             }
 
             return ImageIO.read(this.getClass().getResource("/" + image_file));
-        } catch (IOException e) {
-            //e.printStackTrace();
         } catch (Exception e) {
             //e.printStackTrace();
         }
@@ -1092,7 +1080,7 @@ public abstract class VGDLSprite {
                 i += 1;
             }while(!noMoreFiles);
             image = theImages.get(0); //Default.
-        }catch(Exception e) {}
+        } catch(Exception ignored) {}
         return theImages;
     }
 
@@ -1183,11 +1171,10 @@ public abstract class VGDLSprite {
         toSprite.img = this.img;
         toSprite.orientedImg = this.orientedImg;
 
-        toSprite.itypes = new ArrayList<Integer>();
-        for(Integer it : this.itypes)
-            toSprite.itypes.add(it);
+        toSprite.itypes = new ArrayList<>();
+        toSprite.itypes.addAll(this.itypes);
 
-        toSprite.resources = new TreeMap<Integer, Integer>();
+        toSprite.resources = new TreeMap<>();
         Set<Map.Entry<Integer, Integer>> entries = this.resources.entrySet();
         for(Map.Entry<Integer, Integer> entry : entries)
         {
@@ -1206,7 +1193,7 @@ public abstract class VGDLSprite {
         if(!(o instanceof VGDLSprite)) return false;
         VGDLSprite other = (VGDLSprite)o;
 
-        if(other.name != this.name) return false;
+        if(!other.name.equals(this.name)) return false;
         if(other.is_static != this.is_static) return false;
         if(other.only_active != this.only_active) return false;
         if(other.disabled != this.disabled) return false;
@@ -1230,13 +1217,13 @@ public abstract class VGDLSprite {
         if(other.portal != this.portal) return false;
         if(other.is_npc != this.is_npc) return false;
         if(other.is_from_avatar != this.is_from_avatar) return false;
-        if(other.invisible != this.invisible) return false;
+        if(!other.invisible.equals(this.invisible)) return false;
         if(other.autotiling != this.autotiling) return false;
         if(other.randomtiling != this.randomtiling) return false;
         if(other.frameRate != this.frameRate) return false;
         if(other.spriteID != this.spriteID) return false;
         if(other.isFirstTick != this.isFirstTick) return false;
-        if(other.hidden != this.hidden) return false;
+        if(!other.hidden.equals(this.hidden)) return false;
         if(other.healthPoints != this.healthPoints) return false;
         if(other.maxHealthPoints != this.maxHealthPoints) return false;
         if(other.limitHealthPoints != this.limitHealthPoints) return false;
@@ -1244,7 +1231,7 @@ public abstract class VGDLSprite {
         int numTypes = other.itypes.size();
         if(numTypes != this.itypes.size()) return false;
         for(int i = 0; i < numTypes; ++i)
-            if(other.itypes.get(i) != this.itypes.get(i)) return false;
+            if(!other.itypes.get(i).equals(this.itypes.get(i))) return false;
 
         return true;
     }
@@ -1254,7 +1241,7 @@ public abstract class VGDLSprite {
      * @return a list of all dependent sprites
      */
     public ArrayList<String> getDependentSprites(){
-    	return new ArrayList<String>();
+    	return new ArrayList<>();
     }
     
 }

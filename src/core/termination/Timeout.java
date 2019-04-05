@@ -1,10 +1,7 @@
 package core.termination;
 
-import java.util.ArrayList;
-
 import core.content.TerminationContent;
 import core.game.Game;
-import core.game.GameDescription.TerminationData;
 
 /**
  * Created with IntelliJ IDEA.
@@ -13,6 +10,7 @@ import core.game.GameDescription.TerminationData;
  * Time: 18:48
  * This is a Java port from Tom Schaul's VGDL - https://github.com/schaul/py-vgdl
  */
+@SuppressWarnings("WeakerAccess")
 public class Timeout extends Termination
 {
     public boolean use_counter = false;
@@ -50,43 +48,46 @@ public class Timeout extends Termination
                         }
                     }
                     if (ok) {
-                        win = "False,";
+                        StringBuilder wintext = new StringBuilder("False,");
                         for (int i = 1; i < game.getNoPlayers(); i++) {
                             if (i == game.no_players - 1) {
-                                win += "True";
-                            } else win += "True,";
+                                wintext.append("True");
+                            } else wintext.append("True,");
                         }
+                        win = wintext.toString();
                     } else {
-                        win = "True,";
+                        StringBuilder wintext = new StringBuilder("True,");
                         for (int i = 1; i < game.getNoPlayers(); i++) {
                             if (i == game.no_players - 1) {
-                                win += "False";
-                            } else win += "False,";
+                                wintext.append("False");
+                            } else wintext.append("False,");
                         }
-
+                        win = wintext.toString();
                     }
                 } else {
                     //use the limits, split it and check each counter, idx corresponding to player ID
                     if (game.no_players != game.no_counters) {
-                        win = "";
+                        StringBuilder wintext = new StringBuilder();
                         for (int i = 0; i < game.no_players; i++) {
-                            if (i != game.no_players - 1) win += "False,";
-                            else win += "False";
+                            if (i != game.no_players - 1) wintext.append("False,");
+                            else wintext.append("False");
                         }
+                        win = wintext.toString();
                     } else {
                         String[] split = limits.split(",");
                         int[] intlimits = new int[split.length];
                         for (int i = 0; i < intlimits.length;i++)
                             intlimits[i] = Integer.parseInt(split[i]);
 
+                        StringBuilder wintext = new StringBuilder();
                         for (int i = 0; i < game.no_players; i++) {
-                            win = "";
                             if (game.getValueCounter(i) == intlimits[i]) {
-                                win += "True";
+                                wintext.append("True");
                             } else
-                                win += "False";
-                            if (i != game.no_players - 1) win += ",";
+                                wintext.append("False");
+                            if (i != game.no_players - 1) wintext.append(",");
                         }
+                        win = wintext.toString();
                     }
                 }
             }

@@ -2,9 +2,6 @@ package core.content;
 
 import java.util.HashMap;
 
-import core.logging.Logger;
-import core.logging.Message;
-
 /**
  * Created with IntelliJ IDEA.
  * User: Diego
@@ -24,17 +21,17 @@ public class TerminationContent extends Content
      * Constructor that extracts the contents from a String line
      * @param line String with the contents in VGDL format, to be mapped to the
      *             data structures of this class.
-     * @throws Exception 
+     * @throws Exception if termination content could not be created
      */
     public TerminationContent(String line) throws Exception
     {
         this.line = line;
 
         //Init structures of node content.
-        parameters = new HashMap<String, String>();
+        parameters = new HashMap<>();
 
         //Take the pieces and the first one is the name that defines the content
-        String pieces[] = line.split(" ");
+        String[] pieces = line.split(" ");
         identifier = pieces[0].trim();
 
         if(pieces.length < 2)
@@ -49,7 +46,7 @@ public class TerminationContent extends Content
             String piece = pieces[i].trim();
             if(piece.contains("="))
             {
-                String keyValue[] = piece.split("=");
+                String[] keyValue = piece.split("=");
                 if(keyValue.length > 1){
                     String key = keyValue[0];
                     String value = keyValue[1];

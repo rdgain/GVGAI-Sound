@@ -6,10 +6,6 @@ import java.util.Random;
 import tools.Direction;
 import tools.Vector2d;
 
-import java.awt.*;
-import java.awt.event.KeyEvent;
-import java.lang.reflect.Field;
-
 /**
  * Created with IntelliJ IDEA.
  * User: Diego
@@ -60,9 +56,10 @@ public class Types {
 
             if(objVal instanceof Vector2d) {
                 value = _v2DirStr((Vector2d)objVal);
+                assert value != null;
                 cfield = Types.class.getField(value);
             }
-        }catch(Exception e) { }
+        } catch(Exception ignored) { }
         return cfield;
     }
 
@@ -94,7 +91,7 @@ public class Types {
                                                         {KeyEvent.VK_W, KeyEvent.VK_A, KeyEvent.VK_S,
                                                          KeyEvent.VK_D, KeyEvent.VK_SHIFT, KeyEvent.VK_ESCAPE}};
 
-    public static enum ACTIONS {
+    public enum ACTIONS {
         ACTION_NIL(new int[]{0, 0}),
         ACTION_UP(new int[]{KeyEvent.VK_UP, KeyEvent.VK_W}),
         ACTION_LEFT(new int[]{KeyEvent.VK_LEFT, KeyEvent.VK_A}),
@@ -163,11 +160,10 @@ public class Types {
             else if (move.equals(DRIGHT)) return ACTION_RIGHT;
             else return ACTION_NIL;
         }
-
     }
 
 
-    public static enum WINNER {
+    public enum WINNER {
         PLAYER_DISQ(-100),
         NO_WINNER(-1),
         PLAYER_LOSES(0),
@@ -181,11 +177,11 @@ public class Types {
     /**
      * This is an enum type that describes the potential states of the game
      */
-    public static enum GAMESTATES{
+    public enum GAMESTATES{
         INIT_STATE, ACT_STATE, END_STATE, ABORT_STATE, CHOOSE_LEVEL
     }
 
-    public static enum MOVEMENT {
+    public enum MOVEMENT {
         STILL,
         ROTATE,
         MOVE
@@ -194,7 +190,7 @@ public class Types {
     /**
      * This is an enum type that specifies the type of sso required
      */
-    public static enum LEARNING_SSO_TYPE {
+    public enum LEARNING_SSO_TYPE {
         IMAGE,
         JSON,
         BOTH
@@ -223,7 +219,8 @@ public class Types {
     public static final Color DARKGRAY = new Color(30, 30, 30);
     public static final Color DARKBLUE = new Color(20, 20, 100);
 
-    public static final Color RANDOM = new Color(new Random().nextInt(256), new Random().nextInt(256), new Random().nextInt(256));
+    public static final Color RANDOM = new Color(new Random().nextInt(256), new Random().nextInt(256),
+            new Random().nextInt(256));
 
 
     public static final Integer[] COLOR_DISC = new Integer[]{20, 80, 140, 200};

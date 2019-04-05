@@ -61,10 +61,10 @@ public class InteractionContent extends Content
         this.line = line;
 
         //Init structures of node content.
-        parameters = new HashMap<String, String>();
+        parameters = new HashMap<>();
 
         //Take the pieces and the first one is the name that defines the content
-        String pieces[] = line.split(" ");
+        String[] pieces = line.split(" ");
         object1 = pieces[0].trim();
 
         if(pieces.length < 2)
@@ -89,7 +89,7 @@ public class InteractionContent extends Content
             i++;
         }
 
-        object2 = secondEffectors.toArray(new String[secondEffectors.size()]);
+        object2 = secondEffectors.toArray(new String[0]);
 
         //Take the other pieces and extract properties and parameters key-value.
         for(i = 1 + object2.length; i < pieces.length; ++i)
@@ -97,7 +97,7 @@ public class InteractionContent extends Content
             String piece = pieces[i].trim();
             if(piece.contains("="))
             {
-                String keyValue[] = piece.split("=");
+                String[] keyValue = piece.split("=");
                 String key = keyValue[0];
                 String value = keyValue[1];
 
@@ -109,6 +109,7 @@ public class InteractionContent extends Content
                 function = piece; //I'm assuming there is only one function per line.
             }
         }
+        assert this.function != null;
         this.hashCode = this.function.hashCode();
     }
 

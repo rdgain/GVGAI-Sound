@@ -36,6 +36,7 @@ import tools.Vector2d;
  * Time: 15:33
  * This is a Java port from Tom Schaul's VGDL - https://github.com/schaul/py-vgdl
  */
+@SuppressWarnings("unchecked")
 public class VGDLFactory
 {
 
@@ -156,23 +157,23 @@ public class VGDLFactory
      */
     public void init()
     {
-        registeredGames = new HashMap<String, Class>();
+        registeredGames = new HashMap<>();
         registeredGames.put("BasicGame", BasicGame.class);
         registeredGames.put("GameSpace", GameSpace.class);
 
-        registeredSprites = new HashMap<String, Class>();
+        registeredSprites = new HashMap<>();
         for(int i = 0;  i < spriteStrings.length; ++i)
         {
             registeredSprites.put(spriteStrings[i], spriteClasses[i]);
         }
 
-        registeredEffects  = new HashMap<String, Class>();
+        registeredEffects  = new HashMap<>();
         for(int i = 0;  i < effectStrings.length; ++i)
         {
             registeredEffects.put(effectStrings[i], effectClasses[i]);
         }
 
-        registeredTerminations = new HashMap<String, Class>();
+        registeredTerminations = new HashMap<>();
         for(int i = 0;  i < terminationStrings.length; ++i)
         {
             registeredTerminations.put(terminationStrings[i], terminationClasses[i]);
@@ -195,19 +196,14 @@ public class VGDLFactory
      * @param content potential parameters for the class.
      * @return The game just created.
      */
-    @SuppressWarnings("unchecked")
-    public Game createGame(GameContent content)
+    Game createGame(GameContent content)
     {
         try{
             Class gameClass = registeredGames.get(content.referenceClass);
-            Constructor gameConstructor = gameClass.getConstructor(new Class[] {GameContent.class});
+            Constructor gameConstructor = gameClass.getConstructor(GameContent.class);
             return (Game) gameConstructor.newInstance(new Object[]{content});
 
-        }catch (NoSuchMethodException e)
-        {
-            e.printStackTrace();
-            System.out.println("Error creating game of class " + content.referenceClass);
-        }catch (Exception e)
+        } catch (Exception e)
         {
             e.printStackTrace();
             System.out.println("Error creating game of class " + content.referenceClass);
@@ -224,7 +220,6 @@ public class VGDLFactory
      * @param dim dimensions of the sprite on the world.
      * @return the new sprite, created and initialized, ready for play!
      */
-    @SuppressWarnings("unchecked")
     public VGDLSprite createSprite(Game game, SpriteContent content, Vector2d position, Dimension dim)
     {
 
@@ -233,17 +228,11 @@ public class VGDLFactory
         try{
             Class spriteClass = registeredSprites.get(content.referenceClass);
             Constructor spriteConstructor = spriteClass.getConstructor
-                    (new Class[] {Vector2d.class, Dimension.class, SpriteContent.class});
+                    (Vector2d.class, Dimension.class, SpriteContent.class);
             return (VGDLSprite) spriteConstructor.newInstance(new Object[]{position, dim, content});
 
-        }catch (NoSuchMethodException e)
-        {
-            e.printStackTrace();
-            System.out.println("Error creating sprite " + content.identifier + " of class " + content.referenceClass);
-        }
-        catch (NullPointerException e){
-        }
-        catch (Exception e)
+        } catch (NullPointerException ignored){
+        } catch (Exception e)
         {
             e.printStackTrace();
             System.out.println("Error creating sprite " + content.identifier + " of class " + content.referenceClass);
@@ -272,9 +261,8 @@ public class VGDLFactory
      * Creates a new effect, with parameters passed as InteractionContent.
      * @param content parameters for the effect, including its class.
      * @return the new effect, created and initialized, ready to be triggered!
-     * @throws Exception 
+     * @throws Exception if effect could not be created
      */
-    @SuppressWarnings("unchecked")
     public Effect createEffect(Game game, InteractionContent content) throws Exception
     {
         if(game != null)
@@ -283,7 +271,7 @@ public class VGDLFactory
         try{
             Class effectClass = registeredEffects.get(content.function);
             Constructor effectConstructor = effectClass.getConstructor
-                    (new Class[] {InteractionContent.class});
+                    (InteractionContent.class);
             Effect ef = (Effect) effectConstructor.newInstance(new Object[]{content});
 
             if( content.object1.equalsIgnoreCase("TIME") ||
@@ -292,24 +280,15 @@ public class VGDLFactory
 
             return ef;
 
-        }catch (NoSuchMethodException e)
+        } catch (Exception e)
         {
-            String message = "Error creating effect " + content.function + " between "
-            		+ content.object1 + " and ";
+            StringBuilder message = new StringBuilder("Error creating effect " + content.function + " between "
+                    + content.object1 + " and ");
             for(String obj : content.object2) {
-            	message += obj + " ";
+            	message.append(obj).append(" ");
             }
-            message += "\n** Line: " + content.lineNumber + " ** " + content.line;
-            throw new Exception(message);
-        }catch (Exception e)
-        {
-            String message = "Error creating effect " + content.function + " between "
-            		+ content.object1 + " and ";
-            for(String obj : content.object2) {
-            	message += obj + " ";
-            }
-            message += "\n** Line: " + content.lineNumber + " ** " + content.line;
-            throw new Exception(message);
+            message.append("\n** Line: ").append(content.lineNumber).append(" ** ").append(content.line);
+            throw new Exception(message.toString());
         }
     }
 
@@ -318,24 +297,19 @@ public class VGDLFactory
      * Creates a new termination, with parameters passed as TerminationContent.
      * @param content parameters for the termination condition, including its class.
      * @return the new termination, created and initialized, ready to be checked!
-     * @throws Exception 
+     * @throws Exception if termination could not be created
      */
-    @SuppressWarnings("unchecked")
-    public Termination createTermination(Game game, TerminationContent content) throws Exception
+    Termination createTermination(Game game, TerminationContent content) throws Exception
     {
         decorateContent(game, content);
 
         try{
             Class terminationClass = registeredTerminations.get(content.identifier);
             Constructor terminationConstructor = terminationClass.getConstructor
-                    (new Class[] {TerminationContent.class});
-            Termination ter = (Termination) terminationConstructor.newInstance(new Object[]{content});
-            return ter;
+                    (TerminationContent.class);
+            return (Termination) terminationConstructor.newInstance(new Object[]{content});
 
-        }catch (NoSuchMethodException e)
-        {
-            throw new Exception("Line: " + content.lineNumber + " Error creating termination condition " + content.identifier);
-        }catch (Exception e)
+        } catch (Exception e)
         {
             throw new Exception("Line: " + content.lineNumber + " Error creating termination condition " + content.identifier);
         }
@@ -345,13 +319,12 @@ public class VGDLFactory
      * Parses the parameters from content, assigns them to variables in obj.
      * @param content contains the parameters to read.
      * @param obj object with the variables to assign.
-     * @throws Exception 
      */
     public void parseParameters(Content content, Object obj)
     {
         //Get all fields from the class and store it as key->field
         Field[] fields = obj.getClass().getFields();
-        HashMap<String, Field> fieldMap = new HashMap<String, Field>();
+        HashMap<String, Field> fieldMap = new HashMap<>();
         for (Field field : fields)
         {
             String strField = field.toString();
@@ -360,8 +333,8 @@ public class VGDLFactory
 
             fieldMap.put(fieldName, field);
         }
-        Object objVal = null;
-        Field cfield = null;
+        Object objVal;
+        Field cfield;
         //Check all parameters from content
         for (String parameter : content.parameters.keySet())
         {
@@ -374,7 +347,8 @@ public class VGDLFactory
                     objVal = cfield.get(null);
                 } catch (Exception e) {
                     try {
-                        if (!parameter.equalsIgnoreCase("scoreChange") && !parameter.equalsIgnoreCase("scoreChangeIfKilled"))
+                        if (!parameter.equalsIgnoreCase("scoreChange") &&
+                                !parameter.equalsIgnoreCase("scoreChangeIfKilled"))
                             objVal = Integer.parseInt(value);
                         else objVal = value;
                     } catch (NumberFormatException e1) {
@@ -383,8 +357,10 @@ public class VGDLFactory
                         } catch (NumberFormatException e2) {
                             try {
                                 if((value.equalsIgnoreCase("true") ||
-                                   value.equalsIgnoreCase("false") ) && !parameter.equalsIgnoreCase("win")
-                                        && !parameter.equalsIgnoreCase("hidden")  && !parameter.equalsIgnoreCase("invisible"))
+                                   value.equalsIgnoreCase("false") ) &&
+                                        !parameter.equalsIgnoreCase("win")
+                                        && !parameter.equalsIgnoreCase("hidden") &&
+                                        !parameter.equalsIgnoreCase("invisible"))
                                     objVal = Boolean.parseBoolean(value);
                                 else
                                     objVal = value;
@@ -417,12 +393,11 @@ public class VGDLFactory
                 }
 
                 if( warn ){
-                    Logger.getInstance().addMessage(new Message(Message.ERROR, "Unknown field (" + parameter + "=" + value +
-                            ") from " + content.toString()));
+                    Logger.getInstance().addMessage(new Message(Message.ERROR, "Unknown field (" + parameter
+                            + "=" + value + ") from " + content.toString()));
                 }
             }
         }
-
     }
 
     /**
@@ -442,7 +417,7 @@ public class VGDLFactory
             {
                 try{
                     Object objVal = field.get(obj);
-                    return ((Integer)objVal).intValue();
+                    return (Integer) objVal;
                 }catch(Exception e)
                 {
                     System.out.println("ERROR: invalid requested int parameter " + fieldName);

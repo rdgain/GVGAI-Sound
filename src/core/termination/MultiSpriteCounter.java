@@ -13,6 +13,7 @@ import core.game.Game;
  * Time: 18:54
  * This is a Java port from Tom Schaul's VGDL - https://github.com/schaul/py-vgdl
  */
+@SuppressWarnings("WeakerAccess")
 public class MultiSpriteCounter extends Termination
 {
     //TODO if needed: Theoretically, we could have an array of types here... to be done.
@@ -77,7 +78,7 @@ public class MultiSpriteCounter extends Termination
     
     @Override
 	public ArrayList<String> getTerminationSprites() {
-		ArrayList<String> result = new ArrayList<String>();
+		ArrayList<String> result = new ArrayList<>();
 		if(stype1 != null) result.add(stype1);
         if(stype2 != null) result.add(stype2);
         if(stype3 != null) result.add(stype3);

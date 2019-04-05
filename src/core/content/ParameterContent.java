@@ -1,8 +1,6 @@
 package core.content;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Random;
 
 /**
  * Created with IntelliJ IDEA.
@@ -16,12 +14,12 @@ public class ParameterContent extends Content
     /**
      * Number of points that can be sampled from minValue
      */
-    protected int nPoints;
+    int nPoints;
 
     /**
      * Is final value set
      */
-    protected boolean isFinalValueSet;
+    boolean isFinalValueSet;
 
     /**
      * Debug only: Shows the values given to parameters.
@@ -44,10 +42,10 @@ public class ParameterContent extends Content
         this.line = line;
 
         //Init structures of node content.
-        parameters = new HashMap<String, String>();
+        parameters = new HashMap<>();
 
         //Take the pieces and the first one is the name that defines the content
-        String pieces[] = line.split(" ");
+        String[] pieces = line.split(" ");
 
         if(pieces.length < 2)
         {
@@ -64,7 +62,7 @@ public class ParameterContent extends Content
             String piece = pieces[i].trim();
             if(piece.contains("="))
             {
-                String keyValue[] = piece.split("=");
+                String[] keyValue = piece.split("=");
                 String key = keyValue[0];
                 String value = keyValue[1];
 

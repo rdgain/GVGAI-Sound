@@ -13,12 +13,13 @@ import java.util.ArrayList;
  * Time: 18:54
  * This is a Java port from Tom Schaul's VGDL - https://github.com/schaul/py-vgdl
  */
+@SuppressWarnings("WeakerAccess")
 public class MultiSpriteCounterSubTypes extends Termination
 {
     //TODO if needed: Theoretically, we could have an array of types here... to be done.
     public String stype1;
-    public int itype1=-1;
-    public int subTypesNum=-1;
+    public int itype1 = -1;
+    public int subTypesNum = -1;
 
     public MultiSpriteCounterSubTypes(){}
 
@@ -78,7 +79,7 @@ public class MultiSpriteCounterSubTypes extends Termination
     
     @Override
 	public ArrayList<String> getTerminationSprites() {
-		ArrayList<String> result = new ArrayList<String>();
+		ArrayList<String> result = new ArrayList<>();
 		if(stype1 != null) result.add(stype1);
 		return result;
 	}

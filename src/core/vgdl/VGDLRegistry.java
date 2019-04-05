@@ -34,7 +34,7 @@ public class VGDLRegistry
      */
     public void init()
     {
-        sprite_mapping = new TreeMap<String, Integer>();
+        sprite_mapping = new TreeMap<>();
     }
 
     /**

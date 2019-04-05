@@ -30,7 +30,7 @@ public class Node
     /**
      *  Indent of the node in the tree.
      */
-    public int indent;
+    private int indent;
 
     /**
      * Children of this node.
@@ -40,28 +40,17 @@ public class Node
     /**
      * The line number of the node's contents
      */
-    public int lineNumber;
+    int lineNumber;
 
     /**
      * Constructor of the node.
      * @param contentLine string with the node information
      * @param indent indent level of this node, to determine its place on the tree.
      * @param parent indicates the parent of the new node, if any.
-     * @throws Exception 
+     * @throws Exception if node could not be created
      */
-    public Node(String contentLine, int indent, Node parent, int set) throws Exception
-    {
-        children = new ArrayList<Node>();
-        this.content = createContent(contentLine, set);
-        this.indent = indent;
-        if(parent == null)
-            this.parent = null;
-        else
-            parent.insert(this);
-    }
-
     public Node(String contentLine, int indent, Node parent, int set, int lineNumber) throws Exception {
-        children = new ArrayList<Node>();
+        children = new ArrayList<>();
         this.content = createContent(contentLine, set);
         this.indent = indent;
         if(parent == null)
@@ -76,7 +65,7 @@ public class Node
      * @param line line in VGDL format.
      * @param set indicates the set the line belongs to (see Types.java).
      * @return the line parsed in a content object.
-     * @throws Exception 
+     * @throws Exception if content could not be created
      */
     private Content createContent(String line, int set) throws Exception
     {
@@ -135,16 +124,16 @@ public class Node
      */
     public String toString()
     {
-        String allStr = content.toString();
+        StringBuilder allStr = new StringBuilder(content.toString());
         if(this.children.size() == 0)
-            return allStr;
+            return allStr.toString();
 
 
-        allStr += ": ";
+        allStr.append(": ");
         for(Node n : this.children)
-            allStr += n.toString() + "; ";
+            allStr.append(n.toString()).append("; ");
 
-        return allStr;
+        return allStr.toString();
     }
 
     /**

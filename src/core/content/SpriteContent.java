@@ -38,8 +38,8 @@ public class SpriteContent extends Content
      * Default constructor.
      */
     public SpriteContent(){
-        itypes = new ArrayList<Integer>();
-        subtypes = new ArrayList<Integer>();
+        itypes = new ArrayList<>();
+        subtypes = new ArrayList<>();
     }
 
     /**
@@ -52,9 +52,9 @@ public class SpriteContent extends Content
         this.line = null;
         this.referenceClass = refClass;
         this.identifier = id;
-        parameters = new HashMap<String, String>();
-        itypes = new ArrayList<Integer>();
-        subtypes = new ArrayList<Integer>();
+        parameters = new HashMap<>();
+        itypes = new ArrayList<>();
+        subtypes = new ArrayList<>();
     }
 
     /**
@@ -66,15 +66,15 @@ public class SpriteContent extends Content
     {
         this.referenceClass = null;
         this.line = line;
-        parameters = new HashMap<String, String>();
-        itypes = new ArrayList<Integer>();
-        subtypes = new ArrayList<Integer>();
+        parameters = new HashMap<>();
+        itypes = new ArrayList<>();
+        subtypes = new ArrayList<>();
 
         //Init structures of node content.
-        parameters = new HashMap<String, String>();
+        parameters = new HashMap<>();
 
         //Take the pieces and the first one is the name that defines the content
-        String pieces[] = line.split(" ");
+        String[] pieces = line.split(" ");
         identifier = pieces[0].trim();
 
         //Take the other pieces and extract properties and parameters key-value.
@@ -83,7 +83,7 @@ public class SpriteContent extends Content
             String piece = pieces[i].trim();
             if(piece.contains("="))
             {
-                String keyValue[] = piece.split("=");
+                String[] keyValue = piece.split("=");
                 String key = keyValue[0];
                 String value = keyValue[1];
 
@@ -100,7 +100,7 @@ public class SpriteContent extends Content
     public void assignTypes(ArrayList<String> types)
     {
         if(itypes == null)
-            itypes = new ArrayList<Integer>();
+            itypes = new ArrayList<>();
 
         for(String stype : types)
         {
@@ -116,8 +116,7 @@ public class SpriteContent extends Content
     @Override
     public String toString()
     {
-        String line = "[" + identifier + ":" + referenceClass + "]";
-        return line;
+        return "[" + identifier + ":" + referenceClass + "]";
     }
 
 

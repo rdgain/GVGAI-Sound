@@ -11,16 +11,14 @@ public class ParameterBoolContent extends ParameterContent {
     /**
      * Boolean values
      */
-    public boolean[] bValues;
+    private boolean[] bValues;
 
     /**
      * Final boolean value
      */
-    public boolean finalBooleanValue;
+    private boolean finalBooleanValue;
 
-
-
-    public ParameterBoolContent(ParameterContent pc, String line) {
+    ParameterBoolContent(ParameterContent pc, String line) {
         this.line = line;
         this.parameters = pc.parameters;
         this.identifier = pc.identifier;
@@ -31,7 +29,8 @@ public class ParameterBoolContent extends ParameterContent {
     public void init()
     {
         String[] valuesToRead = (parameters.get("values")).split(":");
-        bValues = new boolean[]{valuesToRead[0].equalsIgnoreCase("true"), valuesToRead[1].equalsIgnoreCase("true")};
+        bValues = new boolean[]{valuesToRead[0].equalsIgnoreCase("true"),
+                valuesToRead[1].equalsIgnoreCase("true")};
         if(bValues[0] != bValues[1])
             nPoints = 2;
         else nPoints = 1;

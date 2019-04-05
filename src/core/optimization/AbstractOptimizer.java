@@ -1,7 +1,5 @@
 package core.optimization;
 
-import tools.ElapsedCpuTimer;
-
 /**
  * Base class for optimization
  * participants have to extends this class and 

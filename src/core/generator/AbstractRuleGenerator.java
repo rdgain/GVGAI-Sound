@@ -16,8 +16,7 @@ public abstract class AbstractRuleGenerator {
     public abstract String[][] generateRules(SLDescription sl, ElapsedCpuTimer time);
     
     /**
-     * Return a list of all supersets 
-     * @return
+     * @return a list of all supersets
      */
     public HashMap<String, ArrayList<String>> getSpriteSetStructure(){
 	return null;

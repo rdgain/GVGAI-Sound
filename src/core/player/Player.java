@@ -29,11 +29,6 @@ public abstract class Player {
     private String actionFile;
 
     /**
-     * Writer for the actions file.
-     */
-    private BufferedWriter writer;
-
-    /**
      * Set this variable to FALSE to avoid core.logging the actions to a file.
      */
     private static final boolean SHOULD_LOG = true;
@@ -121,7 +116,8 @@ public abstract class Player {
     final public void teardown(Game played) {
         try {
             if((this.actionFile != null && !actionFile.equals("")) && SHOULD_LOG) {
-                writer = new BufferedWriter(new FileWriter(new File(this.actionFile)));
+                // Writer for the actions file.
+                BufferedWriter writer = new BufferedWriter(new FileWriter(new File(this.actionFile)));
                 writer.write(randomSeed +
                         " " + (played.getWinner() == Types.WINNER.PLAYER_WINS ? 1 : 0) +
                         " " + played.getScore() + " " + played.getGameTick() + "\n");

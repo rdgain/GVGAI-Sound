@@ -13,6 +13,7 @@ import core.game.Game;
  * Time: 18:47
  * This is a Java port from Tom Schaul's VGDL - https://github.com/schaul/py-vgdl
  */
+@SuppressWarnings("WeakerAccess")
 public abstract class Termination {
 
     public String win;
@@ -41,8 +42,7 @@ public abstract class Termination {
     public boolean win (int playerID) {
         try {
             String[] winners = win.split(",");
-            boolean win = Boolean.parseBoolean(winners[playerID]);
-            return win;
+            return Boolean.parseBoolean(winners[playerID]);
         } catch (Exception e) {
             return false;
         }
@@ -59,24 +59,26 @@ public abstract class Termination {
             }
             //give win to player/s with most number of points, rest lose
             win = "";
+            StringBuilder wintext = new StringBuilder();
             boolean winner = false;
             for (int i = 0; i < game.no_players; i++) {
                 double s = game.getAvatar(i).getScore();
                 if (s == maxScore) {
-                    win += "True";
+                    wintext.append("True");
                 } else {
-                    win += "False";
+                    wintext.append("False");
                 }
                 if (i != game.no_players - 1) {
-                    win += ",";
+                    wintext.append(",");
                 }
                 if (s != 0) winner = true;
             }
             if (!winner)
                 for (int i = 0; i < game.no_players; i++) {
-                    if (i != game.no_players - 1) win += "False,";
-                    else win += "False";
+                    if (i != game.no_players - 1) wintext.append("False,");
+                    else wintext.append("False");
                 }
+            win = wintext.toString();
         }
     }
 
@@ -85,6 +87,6 @@ public abstract class Termination {
      * @return all termination condition sprites
      */
     public ArrayList<String> getTerminationSprites(){
-    	return new ArrayList<String>();
+    	return new ArrayList<>();
     }
 }

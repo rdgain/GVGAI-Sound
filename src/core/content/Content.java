@@ -1,7 +1,5 @@
 package core.content;
 
-import tools.Utils;
-
 import java.util.HashMap;
 
 /**
@@ -53,32 +51,28 @@ public abstract class Content
     public abstract void decorate (HashMap<String, ParameterContent> pcs);
 
 
-    protected void _decorate(HashMap<String, ParameterContent> pcs)
+    void _decorate(HashMap<String, ParameterContent> pcs)
     {
         for (String parameter : this.parameters.keySet()) {
             String value = this.parameters.get(parameter);
-            String[] tokens = value.split(",");
-            String[] allValues = new String[tokens.length];
-            int idx = 0;
-
 
             //For compatibility with N players, this might have more than one value.
             String[] values = value.split(",");
-            String builtStValue = "";
+            StringBuilder builtStValue = new StringBuilder();
             for(int i = 0; i < values.length; ++i)
             {
                 String v = values[i];
                 if(pcs.containsKey(v)) //Try to decode this parameter
-                    builtStValue +=  pcs.get(v).getStValue();
+                    builtStValue.append(pcs.get(v).getStValue());
                 else //If not, we leave it there (it'll fail later, but good for quickly find the error).
-                    builtStValue += v;
+                    builtStValue.append(v);
 
                 if(i < values.length-1)
-                    builtStValue += ","; //We want the exact number of comas here.
+                    builtStValue.append(","); //We want the exact number of comas here.
             }
 
             if(builtStValue.length() > 0)
-                this.parameters.put(parameter, builtStValue);
+                this.parameters.put(parameter, builtStValue.toString());
 
         }
     }

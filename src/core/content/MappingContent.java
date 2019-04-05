@@ -38,10 +38,10 @@ public class MappingContent extends Content
         this.line = line;
 
         //Init structures of node content.
-        parameters = new HashMap<String, String>();
+        parameters = new HashMap<>();
 
         //Take the pieces and the first one is the name that defines the content
-        String pieces[] = line.split(" ");
+        String[] pieces = line.split(" ");
 
         if(pieces.length < 2)
         {
@@ -53,7 +53,7 @@ public class MappingContent extends Content
         identifier = pieces[0].trim();
         charId = identifier.charAt(0);
 
-        reference = new ArrayList<String>();
+        reference = new ArrayList<>();
         for(int i = 2; i < pieces.length; ++i)
         {
             String spriteType = pieces[i].trim();

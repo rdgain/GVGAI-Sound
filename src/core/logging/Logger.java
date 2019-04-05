@@ -16,7 +16,7 @@ public class Logger {
      * Private constructor to enforce singleton pattern
      */
     private Logger() {
-        messages = new ArrayList<Message>();
+        messages = new ArrayList<>();
         active = true;
     }
 
@@ -44,13 +44,13 @@ public class Logger {
      * @return list of errors and warnings
      */
     public ArrayList<Message> getMessages(int type){
-	ArrayList<Message> result = new ArrayList<Message>();
-	for (int i=0; i<messages.size(); i++){
-	    if(messages.get(i).getType() == type){
-		result.add(messages.get(i));
-	    }
-	}
-	return result;
+	    ArrayList<Message> result = new ArrayList<>();
+        for (Message message : messages) {
+            if (message.getType() == type) {
+                result.add(message);
+            }
+        }
+	    return result;
     }
     
     /**
@@ -80,8 +80,8 @@ public class Logger {
      */
     public int getMessageCount(int type) {
         int result = 0;
-        for (int i=0; i<messages.size(); i++){
-            if(messages.get(i).getType() == type){
+        for (Message message : messages) {
+            if (message.getType() == type) {
                 result += 1;
             }
         }
