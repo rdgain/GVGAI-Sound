@@ -1505,7 +1505,7 @@ public abstract class Game {
 		// Add to events history.
 		if (s1 != null && s2list != null)
 			for(VGDLSprite s2 : s2list)
-				addEvent(s1, s2);
+				addEvent(s1, s2, ef.audio);
 
 		if (ef.count) {
 			for (int i = 0; i < no_counters; i++) {
@@ -1536,7 +1536,7 @@ public abstract class Game {
 
 		// Add to events history.
 		if (s1 != null && s2 != null)
-			addEvent(s1, s2);
+			addEvent(s1, s2, ef.audio);
 
 		if (ef.count) {
 			for (int i = 0; i < no_counters; i++) {
@@ -1551,22 +1551,26 @@ public abstract class Game {
 		}
 	}
 
-	private void addEvent(VGDLSprite s1, VGDLSprite s2) {
+	private void addEvent(VGDLSprite s1, VGDLSprite s2, String audioSrc) {
 		if (s1.is_avatar)
 			historicEvents.add(
-					new Event(gameTick, false, s1.getType(), s2.getType(), s1.spriteID, s2.spriteID, s1.getPosition()));
+					new Event(gameTick, false, s1.getType(), s2.getType(), s1.spriteID, s2.spriteID,
+							s1.getPosition(), audioSrc));
 
 		else if (s1.is_from_avatar)
 			historicEvents.add(
-					new Event(gameTick, true, s1.getType(), s2.getType(), s1.spriteID, s2.spriteID, s1.getPosition()));
+					new Event(gameTick, true, s1.getType(), s2.getType(), s1.spriteID, s2.spriteID,
+							s1.getPosition(), audioSrc));
 
 		else if (s2.is_avatar)
 			historicEvents.add(
-					new Event(gameTick, false, s2.getType(), s1.getType(), s2.spriteID, s1.spriteID, s2.getPosition()));
+					new Event(gameTick, false, s2.getType(), s1.getType(), s2.spriteID, s1.spriteID,
+							s2.getPosition(), audioSrc));
 
 		else if (s2.is_from_avatar)
 			historicEvents.add(
-					new Event(gameTick, true, s2.getType(), s1.getType(), s2.spriteID, s1.spriteID, s2.getPosition()));
+					new Event(gameTick, true, s2.getType(), s1.getType(), s2.spriteID, s1.spriteID,
+							s2.getPosition(), audioSrc));
 	}
 
 	/**
@@ -2146,7 +2150,7 @@ public abstract class Game {
 		this.parameters = parameters;
 	}
 
-	/**
+    /**
 	 * Class for helping collision detection.
 	 */
 	protected class Bucket {
