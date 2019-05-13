@@ -238,7 +238,7 @@ public abstract class Game {
 	 */
 	Types.ACTIONS[] avatarLastAction;
 
-	private boolean playAudio;
+	boolean playAudio;
 
 	/**
 	 * VGDL variables, can be set at the top of the VGDL description.

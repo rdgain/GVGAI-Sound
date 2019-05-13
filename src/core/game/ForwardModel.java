@@ -495,6 +495,7 @@ public class ForwardModel extends Game
                 observationGrid[i][j] = new ArrayList<>();
 
         this.pathf = a_gameState.pathf;
+        this.playAudio = false;
     }
 
 
