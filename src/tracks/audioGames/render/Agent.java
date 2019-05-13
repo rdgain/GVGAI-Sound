@@ -46,16 +46,14 @@ public class Agent extends AudioPlayer {
         int index = randomGenerator.nextInt(actions.size());
         int tick = stateObs.getGameTick();
 
-        if (stateObs.getGameTick() < 50) {
+        if (stateObs.getGameTick() < 100) {
             ArrayList<AudioObservation> observations = stateObs.getAudioObservations();
             for (AudioObservation ao : observations) {
-                SoundManager.getInstance().render(ao.audioSrc, tick, idx);
+                SoundManager.getInstance().render(ao.audioSrc, tick, -1);
                 idx++;
             }
         }
-        Types.ACTIONS action = actions.get(index);
-        System.out.println(tick + " " + action);
-        return action;
+        return actions.get(index);
     }
 
     @Override
