@@ -155,7 +155,7 @@ public class Agent extends AudioPlayer {
             tick++;
         }
 //        System.out.println(getKnowledgeBaseSize());
-        System.out.println(soundKnowledge);
+//        System.out.println(soundKnowledge);
     }
 
     private int getKnowledgeBaseSize() {
