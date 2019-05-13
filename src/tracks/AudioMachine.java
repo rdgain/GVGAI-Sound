@@ -77,7 +77,7 @@ public class AudioMachine {
 
 		// Create players
 		boolean anyHuman = isHuman(agentName);
-		Player player = AudioMachine.createPlayer(agentName, actionFile, toPlay.getObservationAudio(), randomSeed, anyHuman);
+		Player player = AudioMachine.createPlayer(agentName, actionFile, randomSeed, anyHuman);
 		if (player == null) {
 			// Something went wrong in the constructor, controller disqualified
 			toPlay.disqualify();
@@ -134,7 +134,7 @@ public class AudioMachine {
 
 		// Determine the random seed for the player.
 		int randomSeed = new Random().nextInt();
-		Player player = AudioMachine.createPlayer(agentName, null, toPlay.getObservationAudio(), randomSeed, false);
+		Player player = AudioMachine.createPlayer(agentName, null, randomSeed, false);
 		if (!(player instanceof AudioPlayer)) {
 			// Something went wrong in the constructor, controller disqualified
 			toPlay.getAvatar().disqualify(true);
@@ -174,7 +174,7 @@ public class AudioMachine {
 
 				// Reset the game and player.
 				toPlay.reset();
-				((AudioPlayer)player).reset();
+				player.reset();
 			}
 		}
 
@@ -193,8 +193,6 @@ public class AudioMachine {
      * @param actionFile
      *            filename of the file where the actions of this player, for
      *            this game, should be recorded.
-     * @param so
-     *            Initial state of the game to be played by the agent.
      * @param randomSeed
      *            Seed for the sampleRandom generator of the game to be played.
      * @param isHuman
@@ -202,13 +200,12 @@ public class AudioMachine {
      * @return the player, created and initialized, ready to start playing the
      *         game.
      */
-    private static Player createPlayer(String playerName, String actionFile, AudioStateObservation so,
-									   int randomSeed, boolean isHuman) {
+    private static Player createPlayer(String playerName, String actionFile, int randomSeed, boolean isHuman) {
 		Player player = null;
 
         try {
             // create the controller.
-            player = createController(playerName, so);
+            player = createController(playerName);
             if (player != null)
             player.setup(actionFile, randomSeed, isHuman);
             // else System.out.println("No controller created.");
@@ -233,12 +230,10 @@ public class AudioMachine {
      * 
      * @param playerName
      *            Name of the controller to instantiate.
-     * @param so
-     *            Initial state of the game to be played by the agent.
      * @return the player if it could be created, null otherwise.
      */
 
-    private static Player createController(String playerName, AudioStateObservation so) throws RuntimeException {
+    private static Player createController(String playerName) throws RuntimeException {
 		Player player = null;
         try {
 
@@ -249,13 +244,10 @@ public class AudioMachine {
 			// Get the class and the constructor with arguments
 			// (StateObservation, long).
 			Class<? extends Player> controllerClass = Class.forName(playerName).asSubclass(Player.class);
-			Class[] gameArgClass = new Class[] {AudioStateObservation.class, ElapsedCpuTimer.class};
+			Class[] gameArgClass = new Class[] {};
 			Constructor controllerArgsConstructor = controllerClass.getConstructor(gameArgClass);
 
-			// Call the constructor with the appropriate parameters.
-			Object[] constructorArgs = new Object[] { so, ect.copy() };
-
-			player = (Player) controllerArgsConstructor.newInstance(constructorArgs);
+			player = (Player) controllerArgsConstructor.newInstance();
 			player.setPlayerID(0);
 
             // Check if we returned on time, and act in consequence.
@@ -400,7 +392,7 @@ public class AudioMachine {
 		ect.setMaxTimeMillis(CompetitionParameters.TEAR_DOWN_TIME);
 
 		// Inform about the result and the final game state.
-		player.result(toPlay.getObservation(), ect);
+		player.result(toPlay.getObservationAudio(), ect);
 
 		// Check if we returned on time, and act in consequence.
 		long timeTaken = ect.elapsedMillis();

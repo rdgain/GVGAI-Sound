@@ -16,16 +16,15 @@ public class Test {
 
 		// Available controllers:
 		String sampleQLearningSimple = "tracks.audioGames.controllers.qLearningKBS.Agent";
+		String sampleQLearningIntensity = "tracks.audioGames.controllers.qLearningKBI.Agent";
+		String sampleQLearning = "tracks.audioGames.controllers.simple.Agent";
 
 		//Load available games
 		String audioGamesCollection =  "examples/all_games_audio.csv";
 		String[][] games = Utils.readGames(audioGamesCollection);
 
 		//Game settings
-		boolean visuals = true;
 		int seed = new Random().nextInt();
-
-		// Game and level to play
 		int gameIdx = 0;
 		int levelIdx = 0; // level names from 0 to 4 (game_lvlN.txt).
 		String gameName = games[gameIdx][1];
@@ -38,14 +37,14 @@ public class Test {
 						// executed. null if not to save.
 
 		// 1. This starts a game, in a level, played by a human.
-		AudioMachine.playOneGame(game, level1, recordActionsFile, seed, true);
+//		AudioMachine.playOneGame(game, level1, recordActionsFile, seed, true);
 
 		// 2. This plays a game in a level by the controller.
-//		AudioMachine.runOneGame(game, level1, visuals, sampleQLearningSimple, recordActionsFile, seed, 0);
+//		AudioMachine.runOneGame(game, level1, true, true, sampleQLearningIntensity, recordActionsFile, seed);
 
 		// 3. This plays a single game, in one level, M times :
-//		int M = 10;
-//		AudioMachine.runGames(game, new String[]{level1}, M, sampleQLearningSimple, null);
+		int M = 10;
+		AudioMachine.runGames(game, new String[]{level1}, M, sampleQLearningSimple, null);
 
 		//5. This plays a single game, in the first L levels, M times each. Actions to file optional (set saveActions to true).
 //		int L = 2, M = 1;

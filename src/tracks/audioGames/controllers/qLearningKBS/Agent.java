@@ -11,6 +11,7 @@ import tracks.audioGames.controllers.FeatureState.LearningState;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 
 /**
@@ -43,6 +44,7 @@ public class Agent extends AudioPlayer {
         QValues = new HashMap<>();
         random = new Random();
         soundKnowledge = new HashMap<>();
+        reset();
     }
 
     public void reset() {
@@ -65,8 +67,9 @@ public class Agent extends AudioPlayer {
         int nActions = actions.size();
 
         LearningState currentState = new AudioInfoState(aso);
-        double stateReward = heuristicValue(aso);
-        audioTrace.add(aso.getAudioObservations());
+        ArrayList<AudioObservation> observations = aso.getAudioObservations();
+        double stateReward = heuristicValue(observations);
+        audioTrace.add(observations);
 
         // Update Q Value
         if (previousState != null) {
@@ -112,14 +115,10 @@ public class Agent extends AudioPlayer {
         return toActAction;
     }
 
-    private double heuristicValue(AudioStateObservation aso) {
-        if (aso.getGameWinner() == Types.WINNER.PLAYER_LOSES) return -1;
-        if (aso.getGameWinner() == Types.WINNER.PLAYER_WINS) return 1;
-
+    private double heuristicValue(ArrayList<AudioObservation> observations) {
         double score = 0;
 
         // + for good sounds, - for bad sounds
-        ArrayList<AudioObservation> observations = aso.getAudioObservations();
         for (AudioObservation ao : observations) {
             // Look for current intensity of this sound in our knowledge and add its value if in there
             if (soundKnowledge.containsKey(ao.audioSrc)) {
@@ -145,7 +144,9 @@ public class Agent extends AudioPlayer {
                 // Try to find this sound in knowledge
                 if (soundKnowledge.containsKey(audioSrc)) {
                     double currentWeight = soundKnowledge.get(audioSrc);
-                    soundKnowledge.put(audioSrc, (currentWeight + weight) / 2.0);
+                    double newWeight = (currentWeight + weight) / 2.0;
+                    double updateWeight = newWeight - currentWeight;
+                    soundKnowledge.put(audioSrc, currentWeight + ALPHA * updateWeight);
                 } else {
                     // Could not find sound, create new entry
                     soundKnowledge.put(audioSrc, weight);
@@ -153,6 +154,12 @@ public class Agent extends AudioPlayer {
             }
             tick++;
         }
+//        System.out.println(getKnowledgeBaseSize());
+        System.out.println(soundKnowledge);
+    }
+
+    private int getKnowledgeBaseSize() {
+        return soundKnowledge.size();
     }
 
     private Types.ACTIONS getMaxAction(LearningState state, ArrayList<Types.ACTIONS> actions) {

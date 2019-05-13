@@ -1,17 +1,15 @@
-package tracks.audioGames.controllers.qLearningKBI;
+package tracks.audioGames.controllers.simple;
 
 import core.game.AudioObservation;
 import core.game.AudioStateObservation;
 import core.player.AudioPlayer;
 import ontology.Types;
 import tools.ElapsedCpuTimer;
-import tools.Pair;
 import tracks.audioGames.controllers.FeatureState.AudioInfoState;
 import tracks.audioGames.controllers.FeatureState.LearningState;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.Random;
 
 /**
@@ -33,22 +31,14 @@ public class Agent extends AudioPlayer {
     private static double EPSILON = 0.1;
     private LearningState previousState;
     private double previousReward;
-    private double discount = 0.99;
-
-    // Mapping from sounds to a list of pairs (intensity, value). The values for intensities are updated at the end
-    // of each game based on the game's result.
-    private HashMap<String, ArrayList<Pair<Double, Double>>> soundKnowledge;
-    private ArrayList<ArrayList<AudioObservation>> audioTrace;
 
     public Agent(){
         QValues = new HashMap<>();
         random = new Random();
-        soundKnowledge = new HashMap<>();
-        reset();
     }
 
     public void reset() {
-        audioTrace = new ArrayList<>();
+
     }
 
     /**
@@ -67,9 +57,7 @@ public class Agent extends AudioPlayer {
         int nActions = actions.size();
 
         LearningState currentState = new AudioInfoState(aso);
-        ArrayList<AudioObservation> observations = aso.getAudioObservations();
-        double stateReward = heuristicValue(observations);
-        audioTrace.add(observations);
+        double stateReward = heuristicValue(aso);
 
         // Update Q Value
         if (previousState != null) {
@@ -115,72 +103,13 @@ public class Agent extends AudioPlayer {
         return toActAction;
     }
 
-    private double heuristicValue(ArrayList<AudioObservation> observations) {
-        double score = 0;
-
-        // + for good sounds, - for bad sounds
-        for (AudioObservation ao : observations) {
-            // Look for current intensity of this sound in our knowledge and add its value if in there
-            if (soundKnowledge.containsKey(ao.audioSrc)) {
-                ArrayList<Pair<Double, Double>> soundValues = soundKnowledge.get(ao.audioSrc);
-                for (Pair<Double,Double> p : soundValues) {
-                    if (p.first == ao.intensity) {  // TODO: give some wiggle room
-                        score += p.second;
-                    }
-                }
-            }
-        }
-
-        return score;
+    private double heuristicValue(AudioStateObservation aso) {
+        return 0;
     }
 
     @Override
     public void result(AudioStateObservation aso, ElapsedCpuTimer elapsedCpuTimer) {
-        int result = aso.getGameWinner() == Types.WINNER.PLAYER_WINS ? 1 : -1;
-        int finalTick = aso.getGameTick();
-        // Update knowledge base at the end of the game
-        int tick = 0;
-        for (ArrayList<AudioObservation> l : audioTrace) {
-            double weight = result * Math.pow(discount, finalTick - tick);
-
-            for (AudioObservation ao : l) {
-                String audioSrc = ao.audioSrc;
-                double intensity = ao.intensity;
-
-                // Try to find this sound in knowledge
-                if (soundKnowledge.containsKey(audioSrc)) {
-                    ArrayList<Pair<Double,Double>> values = soundKnowledge.get(audioSrc);
-                    // Try to find intensity
-                    boolean found = false;
-                    for (Pair<Double,Double> p : values) {
-                        if (p.first == intensity) {  // TODO: give wiggle room
-                            p.second = (p.second + weight) / 2.0;  // TODO: smarter update than average
-                            found = true;
-                            break;
-                        }
-                    }
-                    // Could not find intensity for this sound, add new entry
-                    if (!found) {
-                        values.add(new Pair<>(intensity, weight));
-                    }
-                } else {
-                    // Could not find sound, create new entry
-                    ArrayList<Pair<Double,Double>> values = new ArrayList<>();
-                    values.add(new Pair<>(intensity, weight));
-                    soundKnowledge.put(audioSrc, values);
-                }
-            }
-            tick++;
-        }
-//        System.out.println(getKnowledgeBaseSize());
-    }
-
-    private int getKnowledgeBaseSize() {
-        int count = 0;
-        for (Map.Entry<String, ArrayList<Pair<Double,Double>>> e : soundKnowledge.entrySet()) {
-            count += e.getValue().size();
-        }
-        return count;
+        //TODO: use game result to update values?
     }
 
     private Types.ACTIONS getMaxAction(LearningState state, ArrayList<Types.ACTIONS> actions) {

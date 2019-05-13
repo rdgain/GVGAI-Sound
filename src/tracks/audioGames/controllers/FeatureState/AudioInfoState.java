@@ -39,7 +39,9 @@ public class AudioInfoState implements LearningState {
         AudioInfoState anotherState = (AudioInfoState)state;
         if (!avatarLastAction.equals(anotherState.avatarLastAction)) return false;
         for (int i = 0; i < resultLength; i++) {
-            if (!obs[i].equals(anotherState.obs[i])) return false;
+            if (obs[i] == null && anotherState.obs[i] != null) return false;
+            if (obs[i] != null && anotherState.obs[i] == null) return false;
+            if (obs[i] != null && anotherState.obs[i] != null && !obs[i].equals(anotherState.obs[i])) return false;
         }
         return true;
     }

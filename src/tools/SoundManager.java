@@ -61,7 +61,7 @@ public class SoundManager {
 
         String fullPath = path + audio_file + extension;
         if ((new File(fullPath).exists())) {
-            Wave wave = new Wave(audio_file);
+            Wave wave = new Wave(fullPath);
             waves.put(audio_file, wave);
             return wave;
         }

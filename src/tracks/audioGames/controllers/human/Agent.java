@@ -20,7 +20,7 @@ public class Agent extends AudioPlayer
      * @param so state observation of the current game.
      * @param elapsedTimer Timer for the controller creation.
      */
-    public Agent(AudioStateObservation so, ElapsedCpuTimer elapsedTimer) {}
+    public Agent() {}
 
     /**
      * Picks an action. This function is called every game step to request an

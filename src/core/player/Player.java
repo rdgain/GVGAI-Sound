@@ -106,6 +106,10 @@ public abstract class Player {
     {
     }
 
+    public void result(AudioStateObservation stateObs, ElapsedCpuTimer elapsedCpuTimer)
+    {
+    }
+
     public void resultMulti(StateObservationMulti stateObs, ElapsedCpuTimer elapsedCpuTimer)
     {
     }
