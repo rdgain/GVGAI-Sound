@@ -94,6 +94,7 @@ public class AudioObservation implements Comparable<AudioObservation>
         AudioObservation o = (AudioObservation) other;
         if(this.itype != o.itype) return false;
         if(this.intensity != o.intensity) return false;
+        if(!this.audioSrc.equals(o.audioSrc)) return false;
         return true;
     }
 

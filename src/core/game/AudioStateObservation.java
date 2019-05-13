@@ -73,14 +73,26 @@ public class AudioStateObservation {
         return model.getAvatarActions(includeNIL);
     }
 
-//    /**
-//     * Returns the game tick of this particular observation.
-//     * @return the game tick.
-//     */
-//    public int getGameTick()
-//    {
-//        return model.getGameTick();
-//    }
+    /**
+     * Returns the avatar's last move. At the first game cycle, it returns ACTION_NIL.
+     * Note that this may NOT be the same as the last action given by the agent, as it may
+     * have overspent in the last game cycle.
+     * @return the action that was executed in the real game in the last cycle. ACTION_NIL
+     * is returned in the very first game step.
+     */
+    public Types.ACTIONS getAvatarLastAction()
+    {
+        return model.getAvatarLastAction();
+    }
+
+    /**
+     * Returns the game tick of this particular observation.
+     * @return the game tick.
+     */
+    public int getGameTick()
+    {
+        return model.getGameTick();
+    }
 
     /**
      * Indicates if there is a game winner in the current observation.
