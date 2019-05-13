@@ -1,9 +1,10 @@
 package tools;
 
 import com.musicg.wave.Wave;
-
 import javax.sound.sampled.*;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.HashMap;
 
@@ -13,8 +14,11 @@ public class SoundManager {
     private static SoundManager audioPlayer = null;
     private static HashMap<String, Clip> clips;
     private static HashMap<String, Wave> waves;
+    private static HashMap<String, int[][]> samples;
     private static String path = "audio/";
     private static String extension = ".wav";
+
+    private BufferedWriter writer;
 
     public static SoundManager getInstance()
     {
@@ -29,6 +33,7 @@ public class SoundManager {
     {
         clips = new HashMap<>();
         waves = new HashMap<>();
+        samples = new HashMap<>();
     }
 
     private Clip getClip(String audio_file) {
@@ -44,14 +49,58 @@ public class SoundManager {
                 // Create clip reference
                 Clip clip = AudioSystem.getClip();
                 clip.open(audioInputStream);
-
                 clips.put(audio_file, clip);
                 return clip;
             }
         } catch (LineUnavailableException | IOException | UnsupportedAudioFileException e) {
             e.printStackTrace();
         }
+
         return null;
+    }
+
+    private int[][] getSamples(String audio_file) {
+        if(samples.containsKey(audio_file)) {
+            return samples.get(audio_file);
+        }
+
+        try {
+            String fullPath = path + audio_file + extension;
+            if ((new File(fullPath).exists())) {
+                // Create AudioInputStream object and get samples from file
+                AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new File(fullPath).getAbsoluteFile());
+                int frameLength = (int) audioInputStream.getFrameLength();
+                int frameSize = audioInputStream.getFormat().getFrameSize();
+                byte[] eightBitByteArray = new byte[frameLength * frameSize];
+
+                int result = audioInputStream.read(eightBitByteArray);
+                int channels = audioInputStream.getFormat().getChannels();
+                int[][] s = new int[channels][frameLength];
+
+                int sampleIndex = 0;
+                for (int t = 0; t < eightBitByteArray.length;) {
+                    for (int channel = 0; channel < channels; channel++) {
+                        int low = (int) eightBitByteArray[t];
+                        t++;
+                        int high = (int) eightBitByteArray[t];
+                        t++;
+                        int sample = getSixteenBitSample(high, low);
+                        s[channel][sampleIndex] = sample;
+                    }
+                    sampleIndex++;
+                }
+                samples.put(audio_file, s);
+
+                return s;
+            }
+        } catch (IOException | UnsupportedAudioFileException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    private int getSixteenBitSample(int high, int low) {
+        return (high << 8) + (low & 0x00ff);
     }
 
     public Wave getWave(String audio_file) {
@@ -85,6 +134,31 @@ public class SoundManager {
         if (clip != null) {
             clip.setMicrosecondPosition(0);
             this.play(audio_file, volume);
+        }
+    }
+
+    public void render(String audio_file, int gameTick, int idx) {
+        int[][] sample = getSamples(audio_file);
+
+        if (sample != null) {
+            String file = path + "img/" + audio_file + "_" + gameTick;
+            if (idx >= 0) {
+                file += "_" + idx;
+            }
+            file += ".txt";
+            try {
+                writer = new BufferedWriter(new FileWriter(new File(file)));
+                for (int[] ints : sample) {
+                    for (int anInt : ints) {
+                        writer.write(anInt + " ");
+                    }
+                    writer.write("\n");
+                }
+                writer.flush();
+                writer.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 

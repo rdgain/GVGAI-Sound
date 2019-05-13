@@ -340,6 +340,7 @@ public abstract class VGDLSprite {
     public String audio;
     public String audioMove;
     public String audioUse;
+    public boolean used;
 
     /**
      * Initializes the sprite, giving its position and dimensions.
@@ -1204,6 +1205,7 @@ public abstract class VGDLSprite {
         toSprite.audio = this.audio;
         toSprite.audioMove = this.audioMove;
         toSprite.audioUse = this.audioUse;
+        toSprite.used = this.used;
 
         toSprite.itypes = new ArrayList<>();
         toSprite.itypes.addAll(this.itypes);

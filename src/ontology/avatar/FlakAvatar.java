@@ -96,6 +96,7 @@ public class FlakAvatar extends HorizontalAvatar
                 if (game.playAudio()) {
                     SoundManager.getInstance().restart(audioUse, 0);
                 }
+                used = true;
             }
         }
     }

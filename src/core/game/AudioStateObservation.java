@@ -17,15 +17,17 @@ public class AudioStateObservation {
      * get to the next state. This model MUST NOT be public.
      */
     protected ForwardModel model;
+    private Game trueModel;
 
     /**
      * Constructor for StateObservation. Requires a forward model
      *
      * @param a_model forward model of the game.
      */
-    public AudioStateObservation(ForwardModel a_model, int playerID) {
+    public AudioStateObservation(Game trueModel, ForwardModel a_model, int playerID) {
         model = a_model;
         this.playerID = playerID;
+        this.trueModel = trueModel;
     }
 
     /**
@@ -34,7 +36,7 @@ public class AudioStateObservation {
      * @return a copy of the state observation.
      */
     public AudioStateObservation copy() {
-        return new AudioStateObservation(model.copy(), this.playerID);
+        return new AudioStateObservation(trueModel, model.copy(), this.playerID);
     }
 
     /**
@@ -115,7 +117,7 @@ public class AudioStateObservation {
     }
 
     public ArrayList<AudioObservation> getAudioObservations() {
-        return model.getAudioObservations();
+        return trueModel.getAudioObservations();
     }
 
 

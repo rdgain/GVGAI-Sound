@@ -2071,7 +2071,42 @@ public abstract class Game {
 	 * @return the observation.
 	 */
 	public AudioStateObservation getObservationAudio() {
-		return new AudioStateObservation(fwdModel.copy(), 0);
+		return new AudioStateObservation(this, fwdModel.copy(), 0);
+	}
+
+	ArrayList<AudioObservation> getAudioObservations() {
+		ArrayList<AudioObservation> obs = new ArrayList<>();
+
+		// Sprites:
+		for (SpriteGroup spriteGroup : spriteGroups) {
+			for (VGDLSprite sp : spriteGroup.getSprites()) {
+				if (sp.audioMove != null && !sp.audioMove.equals("") && !sp.rect.equals(sp.lastrect)) {
+					obs.add(createAudioObservation(sp, sp.audioMove));
+				}
+				if (sp.audioUse != null && !sp.audioUse.equals("") && sp.used) {
+					obs.add(createAudioObservation(sp, sp.audioUse));
+					sp.used = false;
+				}
+			}
+		}
+
+		// Events:
+		for (Event historicEvent : historicEvents) {
+			if (historicEvent.gameStep >= getGameTick() - 1) {
+				obs.add(createAudioObservation(historicEvent));
+			}
+		}
+
+		Collections.sort(obs);
+		return obs;
+	}
+
+	private AudioObservation createAudioObservation(VGDLSprite sp, String audioSrc) {
+		return new AudioObservation(sp.spriteID, sp.getPosition().dist(fwdModel.getAvatarPosition()), audioSrc);
+	}
+
+	private AudioObservation createAudioObservation(Event e) {
+		return new AudioObservation(e.activeTypeId, e.position.dist(fwdModel.getAvatarPosition()), e.audioSrc);
 	}
 
 	/**

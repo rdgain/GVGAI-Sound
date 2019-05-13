@@ -89,6 +89,7 @@ public class SpawnPoint extends SpriteProducer
                 if (game.playAudio()) {
                     SoundManager.getInstance().restart(audioUse, 0);
                 }
+                used = true;
             }
         }
 

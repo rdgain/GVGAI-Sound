@@ -102,6 +102,7 @@ public class ShootAvatar extends OrientedAvatar
             if (game.playAudio()) {
                 SoundManager.getInstance().restart(audioUse, 0);
             }
+            used = true;
         }
     }
 

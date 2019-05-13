@@ -717,40 +717,6 @@ public class ForwardModel extends Game
         return screenSize;
     }
 
-    public ArrayList<AudioObservation> getAudioObservations() {
-        ArrayList<AudioObservation> obs = new ArrayList<>();
-
-        // Sprites:
-        for (SpriteGroup spriteGroup : spriteGroups) {
-            Iterator<VGDLSprite> spriteIt = spriteGroup.getSpriteIterator();
-            if (spriteIt != null) while (spriteIt.hasNext()) {
-                VGDLSprite sp = spriteIt.next();
-                if (sp.audioMove != null && !sp.audioMove.equals("")) {
-                    obs.add(createAudioObservation(sp, sp.audioMove));
-                }
-                if (sp.audioUse != null && !sp.audioUse.equals("")) {
-                    obs.add(createAudioObservation(sp, sp.audioUse));
-                }
-            }
-        }
-
-        // Events:
-        for (Event historicEvent : historicEvents) {
-            obs.add(createAudioObservation(historicEvent));
-        }
-
-        Collections.sort(obs);
-        return obs;
-    }
-
-    private AudioObservation createAudioObservation(VGDLSprite sp, String audioSrc) {
-        return new AudioObservation(sp.spriteID, sp.getPosition().dist(getAvatarPosition()), audioSrc);
-    }
-
-    private AudioObservation createAudioObservation(Event e) {
-        return new AudioObservation(e.activeTypeId, e.position.dist(getAvatarPosition()), e.audioSrc);
-    }
-
     /* ************** avatar-dependent functions ************** */
 
     /**
