@@ -1,4 +1,4 @@
-BasicGame square_size=32
+BasicGame square_size=32 audio_game=True
     SpriteSet
         background > Immovable                  img=oryx/space1     hidden=True
         base       > Immovable      color=WHITE img=oryx/planet

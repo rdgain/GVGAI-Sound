@@ -239,6 +239,7 @@ public abstract class Game {
 	Types.ACTIONS[] avatarLastAction;
 
 	boolean playAudio;
+	public boolean audio_game;
 
 	/**
 	 * VGDL variables, can be set at the top of the VGDL description.
@@ -889,12 +890,23 @@ public abstract class Game {
 	public double[] playGame(Player[] players, int randomSeed, boolean isHuman, int humanID) {
 		// Prepare some structures and references for this game.
 		prepareGame(players, randomSeed);
-
 		// Create and initialize the panel for the graphics.
 		VGDLViewer view = new VGDLViewer(this, players[humanID]);
-		JEasyFrame frame;
-		frame = new JEasyFrame(view, "Java-VGDL");
+		JEasyFrame frame = new JEasyFrame(view, "Java-VGDL");
+		return playGame(frame, view, players, isHuman, humanID);
+	}
 
+	public double[] playAudioGame(Player[] players, int randomSeed, boolean isHuman, int humanID) {
+		// Prepare some structures and references for this game.
+		prepareGame(players, randomSeed);
+		// Create and initialize the panel for the graphics.
+		JPanel panel = new JPanel();
+		panel.setPreferredSize(new Dimension(300, 150));
+		JEasyFrame frame = new JEasyFrame(panel, "Java-VGDL");
+		return playGame(frame, null, players, isHuman, humanID);
+	}
+
+	private double[] playGame(JEasyFrame frame, VGDLViewer view, Player[] players, boolean isHuman, int humanID) {
 		frame.addKeyListener(ki);
 		frame.addWindowListener(wi);
 		wi.windowClosed = false;
@@ -924,7 +936,9 @@ public abstract class Game {
 			waitStep(remaining);
 
 			// Draw all sprites in the panel.
-			view.paint(this.spriteGroups);
+			if (view != null) {
+				view.paint(this.spriteGroups);
+			}
 
 			// Update the frame title to reflect current score and tick.
 			this.setTitle(frame);
@@ -2049,6 +2063,15 @@ public abstract class Game {
 	 */
 	public StateObservation getObservation() {
 		return new StateObservation(fwdModel.copy(), 0);
+	}
+
+	/**
+	 * Retuns the observation of this state.
+	 *
+	 * @return the observation.
+	 */
+	public AudioStateObservation getObservationAudio() {
+		return new AudioStateObservation(fwdModel.copy(), 0);
 	}
 
 	/**

@@ -33,8 +33,8 @@ public class AudioStateObservation {
      *
      * @return a copy of the state observation.
      */
-    public StateObservation copy() {
-        return new StateObservation(model.copy(), this.playerID);
+    public AudioStateObservation copy() {
+        return new AudioStateObservation(model.copy(), this.playerID);
     }
 
     /**

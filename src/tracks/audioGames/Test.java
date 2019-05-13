@@ -2,6 +2,7 @@ package tracks.audioGames;
 
 import tools.Utils;
 import tracks.ArcadeMachine;
+import tracks.AudioMachine;
 
 import java.util.Random;
 
@@ -13,16 +14,8 @@ public class Test {
 
     public static void main(String[] args) {
 
-		// Available tracks:
-//		String sampleRandomController = "tracks.singlePlayer.simple.sampleRandom.Agent";
-//		String doNothingController = "tracks.singlePlayer.simple.doNothing.Agent";
-//		String sampleOneStepController = "tracks.singlePlayer.simple.sampleonesteplookahead.Agent";
-//		String sampleFlatMCTSController = "tracks.singlePlayer.simple.greedyTreeSearch.Agent";
-//
-//		String sampleMCTSController = "tracks.singlePlayer.advanced.sampleMCTS.Agent";
-//        String sampleRSController = "tracks.singlePlayer.advanced.sampleRS.Agent";
-//        String sampleRHEAController = "tracks.singlePlayer.advanced.sampleRHEA.Agent";
-//		String sampleOLETSController = "tracks.singlePlayer.advanced.olets.Agent";
+		// Available controllers:
+		String sampleQLearningSimple = "tracks.audioGames.controllers.qLearningKBS.Agent";
 
 		//Load available games
 		String audioGamesCollection =  "examples/all_games_audio.csv";
@@ -45,44 +38,27 @@ public class Test {
 						// executed. null if not to save.
 
 		// 1. This starts a game, in a level, played by a human.
-		ArcadeMachine.playOneGame(game, level1, recordActionsFile, seed);
+		AudioMachine.playOneGame(game, level1, recordActionsFile, seed, true);
 
 		// 2. This plays a game in a level by the controller.
-//		ArcadeMachine.runOneGame(game, level1, visuals, sampleRHEAController, recordActionsFile, seed, 0);
+//		AudioMachine.runOneGame(game, level1, visuals, sampleQLearningSimple, recordActionsFile, seed, 0);
 
-
-		// 3. This replays a game from an action file previously recorded
-	//	 String readActionsFile = recordActionsFile;
-	//	 ArcadeMachine.replayGame(game, level1, visuals, readActionsFile);
-
-		// 4. This plays a single game, in N levels, M times :
-//		String level2 = new String(game).replace(gameName, gameName + "_lvl" + 1);
+		// 3. This plays a single game, in one level, M times :
 //		int M = 10;
-//		for(int i=0; i<games.length; i++){
-//			game = games[i][0];
-//			gameName = games[i][1];
-//			level1 = game.replace(gameName, gameName + "_lvl" + levelIdx);
-//			ArcadeMachine.runGames(game, new String[]{level1}, M, sampleMCTSController, null);
-//		}
+//		AudioMachine.runGames(game, new String[]{level1}, M, sampleQLearningSimple, null);
 
-		//5. This plays N games, in the first L levels, M times each. Actions to file optional (set saveActions to true).
-//		int N = games.length, L = 2, M = 1;
+		//5. This plays a single game, in the first L levels, M times each. Actions to file optional (set saveActions to true).
+//		int L = 2, M = 1;
 //		boolean saveActions = false;
 //		String[] levels = new String[L];
 //		String[] actionFiles = new String[L*M];
-//		for(int i = 0; i < N; ++i)
-//		{
-//			int actionIdx = 0;
-//			game = games[i][0];
-//			gameName = games[i][1];
-//			for(int j = 0; j < L; ++j){
-//				levels[j] = game.replace(gameName, gameName + "_lvl" + j);
-//				if(saveActions) for(int k = 0; k < M; ++k)
-//				actionFiles[actionIdx++] = "actions_game_" + i + "_level_" + j + "_" + k + ".txt";
-//			}
-//			ArcadeMachine.runGames(game, levels, M, sampleRHEAController, saveActions? actionFiles:null);
+//
+//		int actionIdx = 0;
+//		for(int j = 0; j < L; ++j){
+//			levels[j] = game.replace(gameName, gameName + "_lvl" + j);
+//			if(saveActions) for(int k = 0; k < M; ++k)
+//				actionFiles[actionIdx++] = "actions_game_" + gameIdx + "_level_" + j + "_" + k + ".txt";
 //		}
-
-
+//		ArcadeMachine.runGames(game, levels, M, sampleQLearningSimple, saveActions ? actionFiles : null);
     }
 }

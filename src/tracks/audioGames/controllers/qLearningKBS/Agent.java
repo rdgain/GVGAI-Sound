@@ -1,4 +1,4 @@
-package tracks.audioGames.controllers;
+package tracks.audioGames.controllers.qLearningKBS;
 
 import core.game.AudioObservation;
 import core.game.AudioStateObservation;
@@ -13,9 +13,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
 
-/*
-
-*/
 /**
  * Created by Mike on 10.07.2017.
  *
@@ -39,7 +36,7 @@ public class Agent extends AudioPlayer {
 
     // Mapping from sounds to a list of pairs (intensity, value). The values for intensities are updated at the end
     // of each game based on the game's result.
-    private HashMap<String, ArrayList<Pair<Double, Double>>> soundKnowledge;
+    private HashMap<String, Double> soundKnowledge;
     private ArrayList<ArrayList<AudioObservation>> audioTrace;
 
     public Agent(){
@@ -126,12 +123,7 @@ public class Agent extends AudioPlayer {
         for (AudioObservation ao : observations) {
             // Look for current intensity of this sound in our knowledge and add its value if in there
             if (soundKnowledge.containsKey(ao.audioSrc)) {
-                ArrayList<Pair<Double, Double>> soundValues = soundKnowledge.get(ao.audioSrc);
-                for (Pair<Double,Double> p : soundValues) {
-                    if (p.first == ao.intensity) {  // TODO: give some wiggle room
-                        score += p.second;
-                    }
-                }
+                score += soundKnowledge.get(ao.audioSrc);
             }
         }
 
@@ -140,7 +132,7 @@ public class Agent extends AudioPlayer {
 
     @Override
     public void result(AudioStateObservation aso, ElapsedCpuTimer elapsedCpuTimer) {
-        int result = aso.getGameWinner() == Types.WINNER.PLAYER_WINS ? 1 : 0;
+        int result = aso.getGameWinner() == Types.WINNER.PLAYER_WINS ? 1 : -1;
         int finalTick = aso.getGameTick();
         // Update knowledge base at the end of the game
         int tick = 0;
@@ -149,29 +141,14 @@ public class Agent extends AudioPlayer {
 
             for (AudioObservation ao : l) {
                 String audioSrc = ao.audioSrc;
-                double intensity = ao.intensity;
 
                 // Try to find this sound in knowledge
                 if (soundKnowledge.containsKey(audioSrc)) {
-                    ArrayList<Pair<Double,Double>> values = soundKnowledge.get(audioSrc);
-                    // Try to find intensity
-                    boolean found = false;
-                    for (Pair<Double,Double> p : values) {
-                        if (p.first == intensity) {  // TODO: give wiggle room
-                            p.second = p.second + weight / 2;  // TODO: smarter update than average
-                            found = true;
-                            break;
-                        }
-                    }
-                    // Could not find intensity for this sound, add new entry
-                    if (!found) {
-                        values.add(new Pair<>(intensity, weight));
-                    }
+                    double currentWeight = soundKnowledge.get(audioSrc);
+                    soundKnowledge.put(audioSrc, (currentWeight + weight) / 2.0);
                 } else {
                     // Could not find sound, create new entry
-                    ArrayList<Pair<Double,Double>> values = new ArrayList<>();
-                    values.add(new Pair<>(intensity, weight));
-                    soundKnowledge.put(audioSrc, values);
+                    soundKnowledge.put(audioSrc, weight);
                 }
             }
             tick++;

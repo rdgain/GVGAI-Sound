@@ -1,5 +1,6 @@
 package core.player;
 
+import core.game.AudioStateObservation;
 import core.game.Game;
 import core.game.StateObservation;
 import core.game.StateObservationMulti;
@@ -78,6 +79,22 @@ public abstract class Player {
      */
     public abstract Types.ACTIONS act(StateObservationMulti stateObs, ElapsedCpuTimer elapsedTimer);
 
+    /**
+     * Picks an action. This function is called every game step to request an
+     * action from the player. The action returned must be contained in the
+     * actions accessible from stateObs.getAvailableActions(), or no action
+     * will be applied.
+     * Multi player method.
+     * @param aso Observation of the current state.
+     * @param elapsedCpuTimer Timer when the action returned is due.
+     * @return An action for the current state
+     */
+    public abstract Types.ACTIONS act(AudioStateObservation aso, ElapsedCpuTimer elapsedCpuTimer);
+
+    /**
+     * Called at the beginning of each game for initialization. Used in learning audio players.
+     */
+    public abstract void reset();
 
     /**
      * Function called when the game is over. This method must finish before CompetitionParameters.TEAR_DOWN_TIME,

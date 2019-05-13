@@ -20,13 +20,6 @@ public abstract class AudioPlayer extends Player {
     @Override
     public final void resultMulti(StateObservationMulti stateObs, ElapsedCpuTimer elapsedCpuTimer) {}
 
-    public abstract Types.ACTIONS act(AudioStateObservation aso, ElapsedCpuTimer elapsedCpuTimer);
-
-    /**
-     * Called at the beginning of each game
-     */
-    public abstract void reset();
-
     /**
      * Function called when the game is over. This method must finish before CompetitionParameters.TEAR_DOWN_TIME,
      *  or the agent will be DISQUALIFIED
