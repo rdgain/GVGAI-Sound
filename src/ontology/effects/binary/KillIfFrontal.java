@@ -29,11 +29,12 @@ public class KillIfFrontal extends Effect
     @Override
     public void execute(VGDLSprite sprite1, VGDLSprite sprite2, Game game)
     {
-	if(sprite1 == null || sprite2 == null){
-	    Logger.getInstance().addMessage(new Message(Message.WARNING, "Neither the 1st nor 2nd sprite can be EOS with KillIfFrontal interaction."));
-	    return;
-	}
-	
+        super.execute(sprite1, sprite2, game);
+        if(sprite1 == null || sprite2 == null){
+            Logger.getInstance().addMessage(new Message(Message.WARNING, "Neither the 1st nor 2nd sprite can be EOS with KillIfFrontal interaction."));
+            return;
+        }
+
         //Kills the sprite, only if they are going in opposite directions or sprite1 is static.
         Vector2d firstV = sprite1.lastDirection();
         Vector2d otherV = sprite2.lastDirection();

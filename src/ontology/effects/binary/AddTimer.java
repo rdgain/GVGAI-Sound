@@ -39,6 +39,7 @@ public class AddTimer extends TimeEffect
     @Override
     public void execute(VGDLSprite sprite1, VGDLSprite sprite2, Game game)
     {
+        super.execute(sprite1, sprite2, game);
         //Adds a timer with the inner effect as delegate.
         TimeEffect tef = new TimeEffect(timerDelegate);
         super.copyTo(tef);

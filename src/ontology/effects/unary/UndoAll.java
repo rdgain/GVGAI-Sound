@@ -39,6 +39,7 @@ public class UndoAll extends Effect
     @Override
     public void execute(VGDLSprite sprite1, VGDLSprite sprite2, Game game)
     {
+        super.execute(sprite1, sprite2, game);
         int[] gameSpriteOrder = game.getSpriteOrder();
         int spriteOrderCount = gameSpriteOrder.length;
         for(int i = 0; i < spriteOrderCount; ++i)

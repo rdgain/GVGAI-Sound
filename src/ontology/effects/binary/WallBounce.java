@@ -33,10 +33,11 @@ public class WallBounce extends Effect
     @Override
     public void execute(VGDLSprite sprite1, VGDLSprite sprite2, Game game)
     {
-	if(sprite1 == null || sprite2 == null){
-	    Logger.getInstance().addMessage(new Message(Message.WARNING, "Neither the 1st nor 2nd sprite can be EOS with WallBounce interaction."));
-	    return;
-	}
+        super.execute(sprite1, sprite2, game);
+        if(sprite1 == null || sprite2 == null){
+            Logger.getInstance().addMessage(new Message(Message.WARNING, "Neither the 1st nor 2nd sprite can be EOS with WallBounce interaction."));
+            return;
+        }
 	
         if (sprite1.gravity > 0)
             sprite1.physics.activeMovement(sprite1, new Direction(0,-1), 0);

@@ -35,6 +35,7 @@ public class DecreaseSpeedToAll extends Effect
     @Override
     public void execute(VGDLSprite sprite1, VGDLSprite sprite2, Game game)
     {
+        super.execute(sprite1, sprite2, game);
         ArrayList<Integer> subtypes = game.getSubTypes(itype);
         for (Integer i: subtypes) {
             Iterator<VGDLSprite> spriteIt = game.getSpriteGroup(i);

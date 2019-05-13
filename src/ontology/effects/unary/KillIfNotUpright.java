@@ -24,6 +24,7 @@ public class KillIfNotUpright extends Effect
     @Override
     public void execute(VGDLSprite sprite1, VGDLSprite sprite2, Game game)
     {
+        super.execute(sprite1, sprite2, game);
     	double current_rotation = ((sprite1.rotation+2*Math.PI)%(2*Math.PI));
     	if (!(current_rotation < 5.0 && current_rotation > 4.4)){
     		game.killSprite(sprite1, false);

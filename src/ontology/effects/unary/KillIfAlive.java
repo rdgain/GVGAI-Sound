@@ -24,7 +24,8 @@ public class KillIfAlive extends Effect {
 
     @Override
     public void execute(VGDLSprite sprite1, VGDLSprite sprite2, Game game) {
-	if(sprite1 == null || sprite2 == null){
+        super.execute(sprite1, sprite2, game);
+	    if(sprite1 == null || sprite2 == null){
             Logger.getInstance().addMessage(new Message(Message.WARNING, "Neither 1st not 2nd sprite can be EOS with KillIfAlive interaction."));
             return;
         }

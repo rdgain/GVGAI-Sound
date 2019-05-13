@@ -47,6 +47,7 @@ public class SubtractHealthPoints extends Effect
     @Override
     public void execute(VGDLSprite sprite1, VGDLSprite sprite2, Game game)
     {
+        super.execute(sprite1, sprite2, game);
         VGDLSprite s = sprite1;
         if (itype != -1) {
             ArrayList<Integer> subtypes = game.getSubTypes(itype);

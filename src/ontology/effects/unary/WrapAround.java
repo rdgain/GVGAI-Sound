@@ -25,10 +25,11 @@ public class WrapAround extends Effect {
 
     @Override
     public void execute(VGDLSprite sprite1, VGDLSprite sprite2, Game game) {
-	if(sprite1 == null){
-	    Logger.getInstance().addMessage(new Message(Message.WARNING, "1st sprite can't be EOS with WrapAround interaction."));
-	    return;
-	}
+        super.execute(sprite1, sprite2, game);
+        if(sprite1 == null){
+            Logger.getInstance().addMessage(new Message(Message.WARNING, "1st sprite can't be EOS with WrapAround interaction."));
+            return;
+        }
 	
         if(sprite1.orientation.x() > 0)
         {

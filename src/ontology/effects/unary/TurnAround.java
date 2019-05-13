@@ -25,10 +25,11 @@ public class TurnAround extends Effect
     @Override
     public void execute(VGDLSprite sprite1, VGDLSprite sprite2, Game game)
     {
-	if(sprite1 == null){
-	    Logger.getInstance().addMessage(new Message(Message.WARNING, "1st sprite can't be EOS with TurnAround interaction."));
-	    return;
-	}
+        super.execute(sprite1, sprite2, game);
+        if(sprite1 == null){
+            Logger.getInstance().addMessage(new Message(Message.WARNING, "1st sprite can't be EOS with TurnAround interaction."));
+            return;
+        }
 	
         sprite1.setRect(sprite1.lastrect);
         sprite1.lastmove = sprite1.cooldown;
