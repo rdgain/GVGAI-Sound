@@ -5,8 +5,8 @@ BasicGame square_size=32
         avatar     > FlakAvatar     stype=sam   img=oryx/spaceship1 audio=use:shoot
         missile    > Missile
             sam  > orientation=UP    color=BLUE singleton=True img=oryx/bullet1
-            bomb > orientation=DOWN  color=RED  speed=0.5 img=oryx/bullet2     audio=move:bombMove
-        alien      > Bomber         stype=bomb  prob=0.01 cooldown=3 speed=0.8 audio=use:alienBomb #audio=move:alienMove;use:alienBomb
+            bomb > orientation=DOWN  color=RED  speed=0.5 img=oryx/bullet2     #audio=move:bombMove
+        alien      > Bomber         stype=bomb  prob=0.01 cooldown=3 speed=0.8 audio=use:alienBomb
             alienGreen > img=oryx/alien3
             alienBlue  > img=oryx/alien1
         portal     > invisible=True hidden=True
@@ -29,10 +29,10 @@ BasicGame square_size=32
         alien   EOS  > turnAround
         missile EOS  > killSprite
 
-        base bomb > killBoth                audio=bombKillBase
-        base sam  > killBoth  scoreChange=1 audio=samKillBase
+        base bomb > killBoth                audio=killBaseAlien
+        base sam  > killBoth  scoreChange=1 audio=killBaseSam
 
-        base   alien > killSprite                audio=baseKillAlien
-        avatar alien > killSprite scoreChange=-1 audio=avatarDie
-        avatar bomb  > killSprite scoreChange=-1 audio=avatarDie
-        alien  sam   > killSprite scoreChange=2  audio=samKillAlien
+        base   alien > killSprite                audio=killBaseAlien
+        avatar alien > killSprite scoreChange=-1 #audio=avatarDie
+        avatar bomb  > killSprite scoreChange=-1 #audio=avatarDie
+        alien  sam   > killSprite scoreChange=2  audio=killAlien
