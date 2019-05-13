@@ -45,20 +45,20 @@ public class WalkerJumper extends Walker
 
     public void update(Game game)
     {
-    	super.updatePassive();
+    	super.updatePassive(game);
     	
     	if (on_ground && this.probability > Math.random())
         {
             Direction dd = new Direction(0,-this.jump_strength);
             this.orientation = new Direction (this.orientation.x(),0.0);
-            this.physics.activeMovement(this, dd, this.speed);
+            this.physics.activeMovement(game, this, dd, this.speed);
 
             Direction temp = new Direction (0,-1);
             lastmove = cooldown; //need this to force this movement.
-            this._updatePos(temp, 5);
+            this._updatePos(game, temp, 5);
 
         }else{
-            this.physics.activeMovement(this, this.orientation, this.speed);
+            this.physics.activeMovement(game, this, this.orientation, this.speed);
         }
 
         on_ground = false;

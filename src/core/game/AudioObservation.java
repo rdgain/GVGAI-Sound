@@ -2,7 +2,7 @@ package core.game;
 
 import com.musicg.wave.Wave;
 import com.musicg.wave.extension.Spectrogram;
-import tools.AudioPlayer;
+import tools.SoundManager;
 
 /**
  * Created by Diego on 19/03/14.
@@ -38,7 +38,7 @@ public class AudioObservation implements Comparable<AudioObservation>
         this.itype = itype;
         this.intensity = intensity;
         this.audioSrc = audio;
-        wave = AudioPlayer.getInstance().getWave(audioSrc);
+        wave = SoundManager.getInstance().getWave(audioSrc);
     }
 
     /**
@@ -51,7 +51,7 @@ public class AudioObservation implements Comparable<AudioObservation>
         this.itype = itype;
         this.intensity = intensity;
         this.audioSrc = audioSrc;
-        wave = AudioPlayer.getInstance().getWave(audioSrc);
+        wave = SoundManager.getInstance().getWave(audioSrc);
     }
 
     public byte[] getBytes() {

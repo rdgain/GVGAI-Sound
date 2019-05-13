@@ -40,7 +40,7 @@ public class WallBounce extends Effect
         }
 	
         if (sprite1.gravity > 0)
-            sprite1.physics.activeMovement(sprite1, new Direction(0,-1), 0);
+            sprite1.physics.activeMovement(game, sprite1, new Direction(0,-1), 0);
 
         doBounce(sprite1, sprite2.rect, game);
 

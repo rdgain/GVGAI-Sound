@@ -116,8 +116,8 @@ public class MovingAvatar extends VGDLSprite {
     {
     	//this.physics.passiveMovement(this);
         if (physicstype != Types.GRID)
-    		super.updatePassive();
-        lastMovementType = this.physics.activeMovement(this, action, speed);
+    		super.updatePassive(game);
+        lastMovementType = this.physics.activeMovement(game, this, action, speed);
     }
 
     /**

@@ -12,7 +12,7 @@ import core.game.Game;
 import core.logging.Logger;
 import core.logging.Message;
 import ontology.Types;
-import tools.AudioPlayer;
+import tools.SoundManager;
 import tools.Direction;
 import tools.Vector2d;
 
@@ -88,8 +88,8 @@ public abstract class Effect{
      */
     public void execute(VGDLSprite sprite1, VGDLSprite sprite2, Game game) {
         // Default execution of effect: play sound if any
-        if (audio != null && !audio.equals("")) {
-            AudioPlayer.getInstance().restart(audio, 0f);
+        if (game.playAudio() && audio != null && !audio.equals("")) {
+            SoundManager.getInstance().restart(audio, 0f);
         }
     }
 

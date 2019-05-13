@@ -52,14 +52,14 @@ public class LanderAvatar extends OrientedAvatar
     {
         super.updateAvatar(game, requestInput, actionMask);
         aim();
-        move();
+        move(game);
     }
     
     public void applyMovement(Game game, Direction action)
     {
     	//this.physics.passiveMovement(this);
     	if (physicstype != 0)
-    		super.updatePassive();
+    		super.updatePassive(game);
     }
 
     
@@ -78,14 +78,14 @@ public class LanderAvatar extends OrientedAvatar
     	this._updateRotation(angle);
     }
     
-    public void move()
+    public void move(Game game)
     {
-    	Direction facing = new Direction(0,0);
+    	Direction facing;
 
     	if (Utils.processMovementActionKeys(getKeyHandler().getMask(), getPlayerID()) == Types.DUP) 
     	{
     		facing = new Direction(Math.cos(this.rotation), Math.sin(this.rotation));
-    		this.physics.activeMovement(this, facing, speed);
+    		this.physics.activeMovement(game, this, facing, speed);
     	}
     }
 

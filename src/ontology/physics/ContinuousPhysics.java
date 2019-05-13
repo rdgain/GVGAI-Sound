@@ -2,6 +2,7 @@ package ontology.physics;
 
 import java.awt.Rectangle;
 
+import core.game.Game;
 import core.vgdl.VGDLSprite;
 import ontology.Types;
 import tools.Direction;
@@ -18,7 +19,7 @@ public class ContinuousPhysics extends GridPhysics
 {
 
     @Override
-    public Types.MOVEMENT passiveMovement(VGDLSprite sprite)
+    public Types.MOVEMENT passiveMovement(Game game, VGDLSprite sprite)
     {
     	
     	if(sprite.isFirstTick)
@@ -32,12 +33,12 @@ public class ContinuousPhysics extends GridPhysics
     	
         if(sprite.speed != 0)
         {
-            sprite._updatePos(sprite.orientation, (int) sprite.speed);
+            sprite._updatePos(game, sprite.orientation, (int) sprite.speed);
 
             if(sprite.gravity > 0 && sprite.mass > 0 && !sprite.on_ground)
             {
             	Direction gravityAction = new Direction(0, sprite.gravity * sprite.mass);
-                this.activeMovement(sprite, gravityAction, 0);
+                this.activeMovement(game, sprite, gravityAction, 0);
             }
             sprite.speed *= (1-sprite.friction);
             return Types.MOVEMENT.MOVE;
@@ -47,7 +48,7 @@ public class ContinuousPhysics extends GridPhysics
 
 
     @Override
-    public Types.MOVEMENT activeMovement(VGDLSprite sprite, Direction action, double speed)
+    public Types.MOVEMENT activeMovement(Game game, VGDLSprite sprite, Direction action, double speed)
     {
         //Here the assumption is that the controls determine the direction of
         //acceleration of the sprite.

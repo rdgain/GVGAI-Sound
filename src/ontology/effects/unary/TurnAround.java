@@ -33,9 +33,9 @@ public class TurnAround extends Effect
 	
         sprite1.setRect(sprite1.lastrect);
         sprite1.lastmove = sprite1.cooldown;
-        sprite1.physics.activeMovement(sprite1, Types.DDOWN, sprite1.speed);
+        sprite1.physics.activeMovement(game, sprite1, Types.DDOWN, sprite1.speed);
         sprite1.lastmove = sprite1.cooldown;
-        sprite1.physics.activeMovement(sprite1, Types.DDOWN, sprite1.speed);
+        sprite1.physics.activeMovement(game, sprite1, Types.DDOWN, sprite1.speed);
         game.reverseDirection(sprite1);
     }
 }

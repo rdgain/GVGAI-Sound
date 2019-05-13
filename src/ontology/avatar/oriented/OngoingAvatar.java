@@ -65,7 +65,7 @@ public class OngoingAvatar extends OrientedAvatar
             this._updateOrientation(action);
 
         //Update movement.
-        super.updatePassive();
+        super.updatePassive(game);
     }
 
     public VGDLSprite copy()

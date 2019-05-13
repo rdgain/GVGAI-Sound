@@ -8,7 +8,7 @@ import core.vgdl.VGDLSprite;
 import core.content.SpriteContent;
 import core.game.Game;
 import ontology.Types;
-import tools.AudioPlayer;
+import tools.SoundManager;
 import tools.Direction;
 import tools.Vector2d;
 
@@ -86,7 +86,9 @@ public class SpawnPoint extends SpriteProducer
                     newSprite.orientation = this.orientation.copy();
 
                 // Play use sound
-                AudioPlayer.getInstance().restart(audioUse, 0);
+                if (game.playAudio()) {
+                    SoundManager.getInstance().restart(audioUse, 0);
+                }
             }
         }
 

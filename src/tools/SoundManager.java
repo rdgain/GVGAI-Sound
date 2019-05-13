@@ -8,24 +8,24 @@ import java.io.IOException;
 import java.util.HashMap;
 
 @SuppressWarnings("FieldCanBeLocal")
-public class AudioPlayer {
+public class SoundManager {
 
-    private static AudioPlayer audioPlayer = null;
+    private static SoundManager audioPlayer = null;
     private static HashMap<String, Clip> clips;
     private static HashMap<String, Wave> waves;
     private static String path = "audio/";
     private static String extension = ".wav";
 
-    public static AudioPlayer getInstance()
+    public static SoundManager getInstance()
     {
         if (audioPlayer == null)
         {
-            audioPlayer = new AudioPlayer();
+            audioPlayer = new SoundManager();
         }
         return audioPlayer;
     }
 
-    private AudioPlayer()
+    private SoundManager()
     {
         clips = new HashMap<>();
         waves = new HashMap<>();

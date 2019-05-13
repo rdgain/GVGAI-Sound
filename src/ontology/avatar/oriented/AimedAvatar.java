@@ -80,7 +80,7 @@ public class AimedAvatar extends ShootAvatar
         super.updateAvatar(game, requestInput, actionMask);
         updateUse(game);
         aim();
-        move();
+        move(game);
     }
 
     
@@ -103,19 +103,19 @@ public class AimedAvatar extends ShootAvatar
     }
 
 
-    public void move()
+    public void move(Game game)
     {
-        Direction facing = new Direction(0,0);
+        Direction facing;
 
         if (Utils.processMovementActionKeys(getKeyHandler().getMask(), getPlayerID()) == Types.DUP)
         {
             facing = new Direction(Math.cos(this.rotation), Math.sin(this.rotation));
-            this.physics.activeMovement(this, facing, speed);
+            this.physics.activeMovement(game, this, facing, speed);
         }
         else if (Utils.processMovementActionKeys(getKeyHandler().getMask(), getPlayerID()) == Types.DDOWN)
         {
             facing = new Direction(Math.cos(this.rotation+Math.toRadians(180)), Math.sin(this.rotation+Math.toRadians(180.0)));
-            this.physics.activeMovement(this, facing, speed);
+            this.physics.activeMovement(game, this, facing, speed);
         }
     }
 

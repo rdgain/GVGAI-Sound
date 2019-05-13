@@ -3,6 +3,7 @@ package ontology.physics;
 import java.awt.Dimension;
 import java.awt.Rectangle;
 
+import core.game.Game;
 import core.vgdl.VGDLSprite;
 import ontology.Types;
 import tools.Direction;
@@ -39,7 +40,7 @@ public class GridPhysics implements Physics {
     }
 
     @Override
-    public Types.MOVEMENT passiveMovement(VGDLSprite sprite)
+    public Types.MOVEMENT passiveMovement(Game game, VGDLSprite sprite)
     {
         if(sprite.isFirstTick)
         {
@@ -55,14 +56,14 @@ public class GridPhysics implements Physics {
 
         if(speed != 0 && sprite.is_oriented)
         {
-            if(sprite._updatePos(sprite.orientation, (int)(speed * this.gridsize.width)))
+            if(sprite._updatePos(game, sprite.orientation, (int)(speed * this.gridsize.width)))
                 return Types.MOVEMENT.MOVE;
         }
         return Types.MOVEMENT.STILL;
     }
 
     @Override
-    public Types.MOVEMENT activeMovement(VGDLSprite sprite, Direction action, double speed)
+    public Types.MOVEMENT activeMovement(Game game, VGDLSprite sprite, Direction action, double speed)
     {
     	if(!sprite.stationary){
 	        if(speed == 0)
@@ -82,7 +83,7 @@ public class GridPhysics implements Physics {
 	                    return Types.MOVEMENT.ROTATE;
 	            }
 	
-	            if(sprite._updatePos(action, (int) (speed * this.gridsize.width)))
+	            if(sprite._updatePos(game, action, (int) (speed * this.gridsize.width)))
 	                return Types.MOVEMENT.MOVE;
 	        }
     	}

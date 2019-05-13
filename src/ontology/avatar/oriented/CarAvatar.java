@@ -53,14 +53,14 @@ public class CarAvatar extends OrientedAvatar
         super.updateAvatar(game, requestInput, actionMask);
         updateUse(game);
         aim();
-        move();
+        move(game);
     }
     
     public void applyMovement(Game game, Direction action)
     {
     	//this.physics.passiveMovement(this);
     	if (physicstype != 0)
-    		super.updatePassive();
+    		super.updatePassive(game);
     }
 
     
@@ -79,7 +79,7 @@ public class CarAvatar extends OrientedAvatar
     	this._updateRotation(angle);
     }
     
-    public void move()
+    public void move(Game game)
     {
     	if (Utils.processMovementActionKeys(getKeyHandler().getMask(), getPlayerID()) == Types.DUP) 
     	{
@@ -92,7 +92,7 @@ public class CarAvatar extends OrientedAvatar
     		facing = 1;
     	}
     	Direction direx =  new Direction(Math.cos(this.rotation+(facing*Math.toRadians(180))), Math.sin(this.rotation+(facing*Math.toRadians(180))));
-    	this.physics.activeMovement(this, direx, 5);
+    	this.physics.activeMovement(game, this, direx, 5);
     }
 
     public VGDLSprite copy()

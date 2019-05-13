@@ -9,7 +9,7 @@ import core.vgdl.VGDLSprite;
 import core.content.SpriteContent;
 import core.game.Game;
 import ontology.Types;
-import tools.AudioPlayer;
+import tools.SoundManager;
 import tools.Direction;
 import tools.Utils;
 import tools.Vector2d;
@@ -99,7 +99,9 @@ public class ShootAvatar extends OrientedAvatar
                 newOne.orientation = new Direction(dir.x, dir.y);
             reduceAmmo(idx);
             newOne.setFromAvatar(true);
-            AudioPlayer.getInstance().restart(audioUse, 0);
+            if (game.playAudio()) {
+                SoundManager.getInstance().restart(audioUse, 0);
+            }
         }
     }
 

@@ -46,7 +46,7 @@ public class RandomMissile extends Missile
             orientation = (Direction) Utils.choice(Types.DBASEDIRS, game.getRandomGenerator());
         }
 
-        this.updatePassive();
+        this.updatePassive(game);
     }
 
     public VGDLSprite copy()

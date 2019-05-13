@@ -238,6 +238,8 @@ public abstract class Game {
 	 */
 	Types.ACTIONS[] avatarLastAction;
 
+	private boolean playAudio;
+
 	/**
 	 * VGDL variables, can be set at the top of the VGDL description.
 	 */
@@ -2148,6 +2150,14 @@ public abstract class Game {
 
 	public void setParameters(HashMap<String, ParameterContent> parameters) {
 		this.parameters = parameters;
+	}
+
+    public boolean playAudio() {
+		return playAudio;
+    }
+
+	public void setAudio(boolean b) {
+		playAudio = b;
 	}
 
     /**

@@ -76,7 +76,7 @@ public class PullWithIt extends Effect
             gridsize = gp.gridsize.width;
         }
 
-        sprite1._updatePos(new Direction(v.x, v.y), (int) (sprite2.speed*gridsize));
+        sprite1._updatePos(game, new Direction(v.x, v.y), (int) (sprite2.speed*gridsize));
 
         if(sprite1.physicstype != Types.GRID)
         {

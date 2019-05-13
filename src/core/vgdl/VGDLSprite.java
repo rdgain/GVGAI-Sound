@@ -24,7 +24,7 @@ import ontology.Types;
 import ontology.physics.ContinuousPhysics;
 import ontology.physics.GridPhysics;
 import ontology.physics.Physics;
-import tools.AudioPlayer;
+import tools.SoundManager;
 import tools.Direction;
 import tools.Utils;
 import tools.Vector2d;
@@ -465,7 +465,7 @@ public abstract class VGDLSprite {
      */
     public void update(Game game)
     {
-        updatePassive();
+        updatePassive(game);
         if (timeToLive > -1) {
             if (timeToLive > 0) timeToLive--;
             else game.killSprite(this,false);
@@ -528,10 +528,10 @@ public abstract class VGDLSprite {
     /**
      * Updates this sprite applying the passive movement.
      */
-    public void updatePassive() {
+    public void updatePassive(Game game) {
 
         if (!is_static && !only_active) {
-            physics.passiveMovement(this);
+            physics.passiveMovement(game, this);
         }
     }
 
@@ -557,7 +557,7 @@ public abstract class VGDLSprite {
      * @param speed the speed of the sprite.
      * @return true if the position changed.
      */
-    public boolean _updatePos(Direction orientation, int speed) {
+    public boolean _updatePos(Game game, Direction orientation, int speed) {
         if (speed == 0) {
             speed = (int) this.speed;
             if(speed == 0) return false;
@@ -569,7 +569,9 @@ public abstract class VGDLSprite {
             lastmove = 0;
 
             // Play movement audio
-            AudioPlayer.getInstance().restart(audioMove, -10f);
+            if (game.playAudio()) {
+                SoundManager.getInstance().restart(audioMove, -10f);
+            }
 
             return true;
         }
