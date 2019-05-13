@@ -24,6 +24,7 @@ import ontology.Types;
 import ontology.physics.ContinuousPhysics;
 import ontology.physics.GridPhysics;
 import ontology.physics.Physics;
+import tools.AudioPlayer;
 import tools.Direction;
 import tools.Utils;
 import tools.Vector2d;
@@ -333,6 +334,14 @@ public abstract class VGDLSprite {
     public double max_speed;
 
     /**
+     * Audio sources of this sprite, format is "action:soundSrc", where action can be move if sprite moves, or use if
+     * sprite has a use-type action (i.e. creating another sprite).
+     */
+    public String audio;
+    public String audioMove;
+    public String audioUse;
+
+    /**
      * Initializes the sprite, giving its position and dimensions.
      * @param position position of the sprite
      * @param size dimensions of the sprite on the screen.
@@ -376,6 +385,9 @@ public abstract class VGDLSprite {
         rotation = 0.0;
         max_speed = -1.0;
         images = new HashMap<>();
+        audio = "";
+        audioMove = "";
+        audioUse = "";
 
         this.size = size;
         determinePhysics(physicstype, size);
@@ -555,6 +567,10 @@ public abstract class VGDLSprite {
         	rect.translate((int) (orientation.x() * speed), (int) (orientation.y() * speed));
         	updateBucket();
             lastmove = 0;
+
+            // Play movement audio
+            AudioPlayer.getInstance().restart(audioMove, -10f);
+
             return true;
         }
         return false;
@@ -969,6 +985,19 @@ public abstract class VGDLSprite {
         //Safety checks:
         if(cooldown < 1)
             cooldown = 1; //Minimum possible value.
+
+        // Separate sounds
+        if (audio != null && !audio.equals("")) {
+            String[] audio_split = audio.split(";");
+            for (String a : audio_split) {
+                String[] a_split = a.split(":");
+                if (a_split[0].equals("move")) {
+                    audioMove = a_split[1];
+                } else if (a_split[0].equals("use")) {
+                    audioUse = a_split[1];
+                }
+            }
+        }
     }
 
 
@@ -1170,6 +1199,9 @@ public abstract class VGDLSprite {
         toSprite.max_speed = this.max_speed;
         toSprite.img = this.img;
         toSprite.orientedImg = this.orientedImg;
+        toSprite.audio = this.audio;
+        toSprite.audioMove = this.audioMove;
+        toSprite.audioUse = this.audioUse;
 
         toSprite.itypes = new ArrayList<>();
         toSprite.itypes.addAll(this.itypes);
@@ -1227,6 +1259,9 @@ public abstract class VGDLSprite {
         if(other.healthPoints != this.healthPoints) return false;
         if(other.maxHealthPoints != this.maxHealthPoints) return false;
         if(other.limitHealthPoints != this.limitHealthPoints) return false;
+        if(!other.audio.equals(this.audio)) return false;
+        if(!other.audioMove.equals(this.audioMove)) return false;
+        if(!other.audioUse.equals(this.audioUse)) return false;
 
         int numTypes = other.itypes.size();
         if(numTypes != this.itypes.size()) return false;

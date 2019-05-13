@@ -48,6 +48,8 @@ public class Event implements Comparable<Event>
      */
     public Vector2d position;
 
+    public String audioSrc;
+
     /**
      * Constructor
      * @param gameStep when the event happened.
@@ -59,7 +61,7 @@ public class Event implements Comparable<Event>
      * @param position where did the event take place.
      */
     public Event(int gameStep, boolean fromAvatar, int activeTypeId, int passiveTypeId,
-                 int activeSpriteId, int passiveSpriteId, Vector2d position)
+                 int activeSpriteId, int passiveSpriteId, Vector2d position, String audioSrc)
     {
         this.gameStep = gameStep;
         this.fromAvatar = fromAvatar;
@@ -68,6 +70,7 @@ public class Event implements Comparable<Event>
         this.activeSpriteId = activeSpriteId;
         this.passiveSpriteId = passiveSpriteId;
         this.position = position;
+        this.audioSrc = audioSrc;
     }
 
     /**
@@ -76,7 +79,8 @@ public class Event implements Comparable<Event>
      */
     public Event copy()
     {
-        return new Event(gameStep, fromAvatar, activeTypeId, passiveTypeId, activeSpriteId, passiveSpriteId, position.copy());
+        return new Event(gameStep, fromAvatar, activeTypeId, passiveTypeId, activeSpriteId, passiveSpriteId,
+                position.copy(), audioSrc);
     }
 
     @Override
@@ -106,6 +110,7 @@ public class Event implements Comparable<Event>
         if(this.activeSpriteId != other.activeSpriteId) return false;
         if(this.passiveSpriteId != other.passiveSpriteId) return false;
         if(! this.position.equals(other.position)) return false;
+        if(! this.audioSrc.equals(other.audioSrc)) return false;
         return true;
     }
 }
