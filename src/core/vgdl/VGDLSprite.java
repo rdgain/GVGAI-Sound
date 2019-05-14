@@ -437,7 +437,7 @@ public abstract class VGDLSprite {
 
         VGDLFactory factory = VGDLFactory.GetInstance();
         factory.parseParameters(content,this);
-        
+
         determinePhysics(physicstype, size);
 
         //post-process. Some sprites may need to do something interesting (i.e. SpawnPoint) once their
@@ -583,9 +583,9 @@ public abstract class VGDLSprite {
         }
         return false;
     }
-    
+
     /**
-     * 
+     *
      * @param rot the rotation of the sprite
      */
     protected void _updateRotation(double rot)
@@ -733,12 +733,12 @@ public abstract class VGDLSprite {
 	                _drawImage(gphx, r);
 	            else
 	                _draw(gphx, r);
-	
+
 	            if(resources.size() > 0)
 	            {
 	                _drawResources(gphx, game, r);
 	            }
-	
+
 	            if(healthPoints > 0)
 	            {
 	                _drawHealthBar(gphx, game, r);
@@ -751,7 +751,7 @@ public abstract class VGDLSprite {
 	            {
 	                _drawResources(gphx, game, r);
 	            }
-	
+
 	            if(healthPoints > 0)
 	            {
 	                _drawHealthBar(gphx, game, r);
@@ -1252,7 +1252,7 @@ public abstract class VGDLSprite {
         if(other.stationary != this.stationary) return false;
         if(other.mass != this.mass) return false;
         if(other.physicstype != this.physicstype) return false;
-        if(other.gravity != this.gravity) return false;		
+        if(other.gravity != this.gravity) return false;
         if(other.friction != this.friction) return false;
         if(other.shrinkfactor != this.shrinkfactor) return false;
         if(other.is_oriented != this.is_oriented) return false;

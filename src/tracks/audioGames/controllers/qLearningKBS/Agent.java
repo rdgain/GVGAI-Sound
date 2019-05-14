@@ -117,16 +117,19 @@ public class Agent extends AudioPlayer {
 
     private double heuristicValue(ArrayList<AudioObservation> observations) {
         double score = 0;
+        int count = 0;
 
         // + for good sounds, - for bad sounds
         for (AudioObservation ao : observations) {
             // Look for current intensity of this sound in our knowledge and add its value if in there
             if (soundKnowledge.containsKey(ao.audioSrc)) {
                 score += soundKnowledge.get(ao.audioSrc);
+                count += 1;
             }
         }
 
-        return score;
+        if (count > 0) return score/count;
+        return -1;
     }
 
     @Override
@@ -155,7 +158,7 @@ public class Agent extends AudioPlayer {
             tick++;
         }
 //        System.out.println(getKnowledgeBaseSize());
-//        System.out.println(soundKnowledge);
+        System.out.println(soundKnowledge);
     }
 
     private int getKnowledgeBaseSize() {

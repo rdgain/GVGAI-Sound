@@ -34,6 +34,7 @@ public class Agent extends AudioPlayer {
     private LearningState previousState;
     private double previousReward;
     private double discount = 0.99;
+    private double INTENSITY_THRESHOLD = 10;
 
     // Mapping from sounds to a list of pairs (intensity, value). The values for intensities are updated at the end
     // of each game based on the game's result.
@@ -117,6 +118,7 @@ public class Agent extends AudioPlayer {
 
     private double heuristicValue(ArrayList<AudioObservation> observations) {
         double score = 0;
+        int count = 0;
 
         // + for good sounds, - for bad sounds
         for (AudioObservation ao : observations) {
@@ -124,14 +126,15 @@ public class Agent extends AudioPlayer {
             if (soundKnowledge.containsKey(ao.audioSrc)) {
                 ArrayList<Pair<Double, Double>> soundValues = soundKnowledge.get(ao.audioSrc);
                 for (Pair<Double,Double> p : soundValues) {
-                    if (p.first == ao.intensity) {  // TODO: give some wiggle room
+                    if (Math.abs(p.first - ao.intensity) <= INTENSITY_THRESHOLD) {
                         score += p.second;
+                        count += 1;
                     }
                 }
             }
         }
-
-        return score;
+        if (count > 0) return score/count;
+        return -1;
     }
 
     @Override
@@ -153,7 +156,7 @@ public class Agent extends AudioPlayer {
                     // Try to find intensity
                     boolean found = false;
                     for (Pair<Double,Double> p : values) {
-                        if (p.first == intensity) {  // TODO: give wiggle room
+                        if (Math.abs(p.first - intensity) <= INTENSITY_THRESHOLD) {
                             p.second = (p.second + weight) / 2.0;  // TODO: smarter update than average
                             found = true;
                             break;
@@ -173,6 +176,7 @@ public class Agent extends AudioPlayer {
             tick++;
         }
 //        System.out.println(getKnowledgeBaseSize());
+        System.out.println(soundKnowledge);
     }
 
     private int getKnowledgeBaseSize() {

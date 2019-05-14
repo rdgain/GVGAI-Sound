@@ -1,5 +1,6 @@
 BasicGame square_size=32 audio_game=True
     SpriteSet
+        floor      > Immovable invisible=True
         base       > Immovable
         avatar     > FlakAvatar stype=sam audio=use:shoot
         missile    > Missile
@@ -13,6 +14,7 @@ BasicGame square_size=32 audio_game=True
         	portalFast > SpawnPoint stype=alienGreen cooldown=12 total=20
 
     LevelMapping
+        . > floor
         0 > base
         1 > portalSlow
         2 > portalFast

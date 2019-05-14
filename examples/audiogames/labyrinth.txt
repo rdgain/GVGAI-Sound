@@ -1,5 +1,6 @@
 BasicGame audio_game=True
     SpriteSet
+        floor > Immovable invisible=True
         exit > Door color=GREEN audio=beacon:shoot
         avatar > MovingAvatar
         wall > Immovable
@@ -13,6 +14,7 @@ BasicGame audio_game=True
         Timeout limit=1000 win=False
 
     LevelMapping
+        . > floor
         x > exit
         w > wall
         A > avatar

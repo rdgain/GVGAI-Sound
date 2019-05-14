@@ -60,4 +60,12 @@ public class Pair<T,U> implements Map.Entry<T, U>, Comparable{
 
     @SuppressWarnings("unchecked")
     public Pair copy()  { return new Pair(first, second); }
+
+    @Override
+    public String toString() {
+        if (first instanceof Double && second instanceof Double) {
+            return "(" + String.format("%.2f", (Double) first) + ";" + String.format("%.3f", (Double) second) + ")";
+        }
+        return super.toString();
+    }
 }

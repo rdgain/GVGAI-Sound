@@ -2087,6 +2087,9 @@ public abstract class Game {
 					obs.add(createAudioObservation(sp, sp.audioUse));
 					sp.used = false;
 				}
+				if (sp.beacon != null && !sp.beacon.equals("")) {
+					obs.add(createAudioObservation(sp, sp.beacon));
+				}
 			}
 		}
 
