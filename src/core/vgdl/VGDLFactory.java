@@ -54,7 +54,7 @@ public class VGDLFactory
              "OrientedAvatar","ShootAvatar", "OngoingAvatar", "OngoingTurningAvatar", "BomberRandomMissile",
              "OngoingShootAvatar", "NullAvatar", "AimedAvatar", "PlatformerAvatar", "BirdAvatar",
              "SpaceshipAvatar", "CarAvatar", "WizardAvatar", "LanderAvatar", "ShootOnlyAvatar", "SpawnPointMultiSprite",
-                    "LOSChaser"};
+                    "LOSChaser", "OrientedFlakAvatar"};
 
 
     /**
@@ -70,7 +70,7 @@ public class VGDLFactory
              OrientedAvatar.class,ShootAvatar.class, OngoingAvatar.class, OngoingTurningAvatar.class, BomberRandomMissile.class,
              OngoingShootAvatar.class, NullAvatar.class, AimedAvatar.class, PlatformerAvatar.class, BirdAvatar.class,
              SpaceshipAvatar.class, CarAvatar.class, WizardAvatar.class, LanderAvatar.class, ShootOnlyAvatar.class, SpawnPointMultiSprite.class,
-                    LOSChaser.class};
+                    LOSChaser.class, OrientedFlakAvatar.class};
 
     /**
      * Available effects for VGDL.

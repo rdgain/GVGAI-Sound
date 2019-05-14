@@ -1,6 +1,6 @@
 BasicGame square_size=32 audio_game=True
     SpriteSet
-        avatar  > OrientedFlakAvatar stype=sam audio=use:shoot
+        avatar  > OrientedFlakAvatar stype=sam orientation=RIGHT audio=use:shoot
         sam     > Flicker singleton=True
         fighter > Missile
             fighterLeft  > orientation=LEFT
