@@ -89,7 +89,7 @@ public abstract class Effect{
     public void execute(VGDLSprite sprite1, VGDLSprite sprite2, Game game) {
         // Default execution of effect: play sound if any
         if (game.playAudio() && audio != null && !audio.equals("")) {
-            SoundManager.getInstance().restart(audio, 0f);
+            SoundManager.getInstance().restart(audio);
         }
     }
 

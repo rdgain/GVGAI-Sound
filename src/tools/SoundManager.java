@@ -73,7 +73,7 @@ public class SoundManager {
                 int frameSize = audioInputStream.getFormat().getFrameSize();
                 byte[] eightBitByteArray = new byte[frameLength * frameSize];
 
-                int result = audioInputStream.read(eightBitByteArray);
+                audioInputStream.read(eightBitByteArray);
                 int channels = audioInputStream.getFormat().getChannels();
                 int[][] s = new int[channels][frameLength];
 
@@ -119,21 +119,19 @@ public class SoundManager {
     }
 
     // Method to play the audio
-    public void play(String audio_file, float volume) {
+    public void play(String audio_file) {
         Clip clip = getClip(audio_file);
         if (clip != null) {
-            FloatControl fc = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
-            fc.setValue(volume);
             clip.start();
         }
     }
 
     // Method to restart the audio
-    public void restart(String audio_file, float volume) {
+    public void restart(String audio_file) {
         Clip clip = getClip(audio_file);
         if (clip != null) {
             clip.setMicrosecondPosition(0);
-            this.play(audio_file, volume);
+            this.play(audio_file);
         }
     }
 

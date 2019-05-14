@@ -100,7 +100,7 @@ public class ShootAvatar extends OrientedAvatar
             reduceAmmo(idx);
             newOne.setFromAvatar(true);
             if (game.playAudio()) {
-                SoundManager.getInstance().restart(audioUse, 0);
+                SoundManager.getInstance().restart(audioUse);
             }
             used = true;
         }

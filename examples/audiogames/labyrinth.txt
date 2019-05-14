@@ -1,0 +1,20 @@
+BasicGame audio_game=True
+    SpriteSet
+        floor > Immovable img=oryx/grass autotiling=True hidden=True
+        exit > Door color=GREEN img=newset/exit2 audio=beacon:shoot
+        avatar > MovingAvatar img=newset/girl1
+        wall > Immovable img=oryx/wall1
+
+    InteractionSet
+        avatar wall > stepBack audio=bump
+        exit avatar > killSprite scoreChange=1
+
+    TerminationSet
+        SpriteCounter stype=exit limit=0 win=True
+        Timeout limit=1000 win=False
+
+    LevelMapping
+        . > floor
+        x > floor exit
+        w > floor wall
+        A > floor avatar

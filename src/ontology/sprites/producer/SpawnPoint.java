@@ -87,7 +87,7 @@ public class SpawnPoint extends SpriteProducer
 
                 // Play use sound
                 if (game.playAudio()) {
-                    SoundManager.getInstance().restart(audioUse, 0);
+                    SoundManager.getInstance().restart(audioUse);
                 }
                 used = true;
             }

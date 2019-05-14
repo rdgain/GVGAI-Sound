@@ -340,6 +340,7 @@ public abstract class VGDLSprite {
     public String audio;
     public String audioMove;
     public String audioUse;
+    public String beacon;
     public boolean used;
 
     /**
@@ -389,6 +390,7 @@ public abstract class VGDLSprite {
         audio = "";
         audioMove = "";
         audioUse = "";
+        beacon = "";
 
         this.size = size;
         determinePhysics(physicstype, size);
@@ -534,6 +536,9 @@ public abstract class VGDLSprite {
         if (!is_static && !only_active) {
             physics.passiveMovement(game, this);
         }
+        if (beacon != null && !beacon.equals("") && game.playAudio()) {
+            SoundManager.getInstance().restart(beacon);
+        }
     }
 
 
@@ -571,7 +576,7 @@ public abstract class VGDLSprite {
 
             // Play movement audio
             if (game.playAudio()) {
-                SoundManager.getInstance().restart(audioMove, -10f);
+                SoundManager.getInstance().restart(audioMove);
             }
 
             return true;
@@ -994,10 +999,16 @@ public abstract class VGDLSprite {
             String[] audio_split = audio.split(";");
             for (String a : audio_split) {
                 String[] a_split = a.split(":");
-                if (a_split[0].equals("move")) {
-                    audioMove = a_split[1];
-                } else if (a_split[0].equals("use")) {
-                    audioUse = a_split[1];
+                switch (a_split[0]) {
+                    case "move":
+                        audioMove = a_split[1];
+                        break;
+                    case "use":
+                        audioUse = a_split[1];
+                        break;
+                    case "beacon":
+                        beacon = a_split[1];
+                        break;
                 }
             }
         }
@@ -1205,6 +1216,7 @@ public abstract class VGDLSprite {
         toSprite.audio = this.audio;
         toSprite.audioMove = this.audioMove;
         toSprite.audioUse = this.audioUse;
+        toSprite.beacon = this.beacon;
         toSprite.used = this.used;
 
         toSprite.itypes = new ArrayList<>();
@@ -1266,6 +1278,7 @@ public abstract class VGDLSprite {
         if(!other.audio.equals(this.audio)) return false;
         if(!other.audioMove.equals(this.audioMove)) return false;
         if(!other.audioUse.equals(this.audioUse)) return false;
+        if(!other.beacon.equals(this.beacon)) return false;
 
         int numTypes = other.itypes.size();
         if(numTypes != this.itypes.size()) return false;
