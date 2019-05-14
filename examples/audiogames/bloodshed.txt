@@ -1,8 +1,9 @@
 BasicGame square_size=32 audio_game=True
     SpriteSet
+        floor   > Immovable invisible=True
         avatar  > OrientedFlakAvatar stype=sam orientation=RIGHT audio=use:shoot
         sam     > Flicker singleton=True
-        fighter > Missile
+        fighter > Missile speed=0.5
             fighterLeft  > orientation=LEFT
             fighterRight > orientation=RIGHT
         portal  > invisible=True
@@ -10,6 +11,7 @@ BasicGame square_size=32 audio_game=True
         	portalRight > SpawnPoint stype=fighterRight cooldown=12 total=20
 
     LevelMapping
+        . > floor
         1 > portalLeft
         2 > portalRight
         A > avatar
