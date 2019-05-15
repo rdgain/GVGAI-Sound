@@ -27,6 +27,7 @@ public class BounceForward extends Effect
     @Override
     public void execute(VGDLSprite sprite1, VGDLSprite sprite2, Game game)
     {
+        super.execute(sprite1, sprite2, game);
         if(sprite1 == null || sprite2 == null){
             Logger.getInstance().addMessage(new Message(Message.WARNING, "Neither the 1st nor 2nd sprite can be EOS with BounceForward interaction."));
             return;
@@ -42,7 +43,7 @@ public class BounceForward extends Effect
             dir.y *= -1;
 
         //Rectangle r = new Rectangle(sprite1.rect);
-        sprite1.physics.activeMovement(sprite1, new Direction(dir.x, dir.y), sprite2.speed);
+        sprite1.physics.activeMovement(game, sprite1, new Direction(dir.x, dir.y), sprite2.speed);
         //sprite1.lastrect = r;
         sprite1.orientation = new Direction(dir.x, dir.y);
     }

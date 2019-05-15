@@ -1,6 +1,7 @@
 package core.player;
 
 import core.competition.CompetitionParameters;
+import core.game.AudioStateObservation;
 import core.game.SerializableStateObservation;
 import core.game.StateObservation;
 import core.game.StateObservationMulti;
@@ -139,9 +140,13 @@ public class LearningPlayer extends Player {
     }
 
     @Override
-    public Types.ACTIONS act(StateObservationMulti stateObs, ElapsedCpuTimer elapsedTimer) {
+    public final Types.ACTIONS act(StateObservationMulti stateObs, ElapsedCpuTimer elapsedTimer) {
         return null;
     }
+    @Override
+    public final Types.ACTIONS act(AudioStateObservation aso, ElapsedCpuTimer elapsedCpuTimer) { return null; }
+    @Override
+    public final void reset() {}
 
     /**
      * Function called when the game is over. This method must finish before CompetitionParameters.TEAR_DOWN_TIME,

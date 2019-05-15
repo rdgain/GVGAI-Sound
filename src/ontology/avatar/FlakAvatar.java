@@ -8,6 +8,7 @@ import core.vgdl.VGDLSprite;
 import core.content.SpriteContent;
 import core.game.Game;
 import ontology.Types;
+import tools.SoundManager;
 import tools.Utils;
 import tools.Vector2d;
 
@@ -92,6 +93,10 @@ public class FlakAvatar extends HorizontalAvatar
             if(added != null){ //singleton sprites could not add anything here.
                 reduceAmmo();
                 added.setFromAvatar(true);
+                if (game.playAudio()) {
+                    SoundManager.getInstance().restart(audioUse);
+                }
+                used = true;
             }
         }
     }

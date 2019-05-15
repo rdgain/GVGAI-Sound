@@ -1,5 +1,6 @@
 package core.player;
 
+import core.game.AudioStateObservation;
 import core.game.StateObservationMulti;
 import ontology.Types;
 import tools.ElapsedCpuTimer;
@@ -16,8 +17,16 @@ import tools.ElapsedCpuTimer;
  */
 public abstract class AbstractPlayer extends Player {
 
-    public Types.ACTIONS act(StateObservationMulti stateObs, ElapsedCpuTimer elapsedTimer) {
+    @Override
+    public final Types.ACTIONS act(StateObservationMulti stateObs, ElapsedCpuTimer elapsedTimer) {
         return Types.ACTIONS.ACTION_NIL;
     }
 
+    @Override
+    public final Types.ACTIONS act(AudioStateObservation aso, ElapsedCpuTimer elapsedCpuTimer) {
+        return null;
+    }
+
+    @Override
+    public final void reset() {}
 }

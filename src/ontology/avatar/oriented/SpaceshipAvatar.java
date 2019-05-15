@@ -53,7 +53,7 @@ public class SpaceshipAvatar extends ShootAvatar
         super.updateAvatar(game, requestInput, actionMask);
         updateUse(game);
         aim();
-        move();
+        move(game);
     }
     
     public void shoot(Game game, int idx)
@@ -77,7 +77,7 @@ public class SpaceshipAvatar extends ShootAvatar
     {
     	//this.physics.passiveMovement(this);
     	if (physicstype != 0)
-    		super.updatePassive();
+    		super.updatePassive(game);
     }
 
     
@@ -96,19 +96,19 @@ public class SpaceshipAvatar extends ShootAvatar
     	this._updateRotation(angle);
     }
     
-    public void move()
+    public void move(Game game)
     {
-    	Direction facing = new Direction(0,0);
+    	Direction facing;
 
     	if (Utils.processMovementActionKeys(getKeyHandler().getMask(), getPlayerID()) == Types.DUP) 
     	{
     		facing = new Direction(Math.cos(this.rotation), Math.sin(this.rotation));
-    		this.physics.activeMovement(this, facing, speed);
+    		this.physics.activeMovement(game, this, facing, speed);
     	}
     	else if (Utils.processMovementActionKeys(getKeyHandler().getMask(), getPlayerID()) == Types.DDOWN) 
     	{
     		facing = new Direction(Math.cos(this.rotation+Math.toRadians(180)), Math.sin(this.rotation+Math.toRadians(180.0)));
-    		this.physics.activeMovement(this, facing, speed);
+    		this.physics.activeMovement(game, this, facing, speed);
     	}
     }
 

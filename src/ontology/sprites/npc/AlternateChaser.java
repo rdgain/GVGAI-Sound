@@ -79,7 +79,7 @@ public class AlternateChaser extends RandomNPC
         actions.clear();
 
         //passive moment.
-        super.updatePassive();
+        super.updatePassive(game);
 
         //Get the closest targets
         closestTargets(game, false);
@@ -100,7 +100,7 @@ public class AlternateChaser extends RandomNPC
         }
 
         //Apply the action to move.
-        this.physics.activeMovement(this, act, this.speed);
+        this.physics.activeMovement(game, this, act, this.speed);
     }
 
     protected void movesToward(VGDLSprite target)

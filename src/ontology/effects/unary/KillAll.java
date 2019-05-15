@@ -36,6 +36,7 @@ public class KillAll extends Effect {
     @Override
     public void execute(VGDLSprite sprite1, VGDLSprite sprite2, Game game)
     {
+        super.execute(sprite1, sprite2, game);
         //First, we need to get all sprites of type stype.
         Iterator<VGDLSprite> spriteIt = game.getSpriteGroup(itype);
 

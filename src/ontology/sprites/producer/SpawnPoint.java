@@ -8,6 +8,7 @@ import core.vgdl.VGDLSprite;
 import core.content.SpriteContent;
 import core.game.Game;
 import ontology.Types;
+import tools.SoundManager;
 import tools.Direction;
 import tools.Vector2d;
 
@@ -83,6 +84,12 @@ public class SpawnPoint extends SpriteProducer
                 //If no orientation given, we set the one from the spawner.
                 else if (newSprite.orientation.equals(Types.DNONE))
                     newSprite.orientation = this.orientation.copy();
+
+                // Play use sound
+                if (game.playAudio()) {
+                    SoundManager.getInstance().restart(audioUse);
+                }
+                used = true;
             }
         }
 

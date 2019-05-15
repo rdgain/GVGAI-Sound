@@ -59,10 +59,10 @@ public class BirdAvatar extends OrientedAvatar
         if(Utils.processUseKey(getKeyHandler().getMask(), getPlayerID())) {
         	Direction action = new Direction (0,-jump_strength);
         	this.orientation = new Direction (this.orientation.x(),0.0);
-        	this.physics.activeMovement(this, action, this.speed);
+        	this.physics.activeMovement(game, this, action, this.speed);
         }
         
-        this.physics.activeMovement(this, action2, this.speed);
+        this.physics.activeMovement(game, this, action2, this.speed);
         
         this._updateRotation(Math.atan2(this.orientation.y(),this.orientation.x()));
     }

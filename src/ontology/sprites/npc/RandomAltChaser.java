@@ -48,9 +48,9 @@ public class RandomAltChaser extends AlternateChaser{
         if(roll < epsilon)
         {
             //do a sampleRandom move.
-            super.updatePassive();
+            super.updatePassive(game);
             Direction act = (Direction) Utils.choice(Types.DBASEDIRS, game.getRandomGenerator());
-            this.physics.activeMovement(this, act, this.speed);
+            this.physics.activeMovement(game, this, act, this.speed);
         }else
         {
             super.update(game);

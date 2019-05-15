@@ -16,6 +16,7 @@ import ontology.Types;
 import ontology.avatar.*;
 import ontology.avatar.oriented.*;
 import ontology.effects.Effect;
+import ontology.effects.SoundEffect;
 import ontology.effects.TimeEffect;
 import ontology.effects.binary.*;
 import ontology.effects.unary.*;
@@ -53,7 +54,7 @@ public class VGDLFactory
              "OrientedAvatar","ShootAvatar", "OngoingAvatar", "OngoingTurningAvatar", "BomberRandomMissile",
              "OngoingShootAvatar", "NullAvatar", "AimedAvatar", "PlatformerAvatar", "BirdAvatar",
              "SpaceshipAvatar", "CarAvatar", "WizardAvatar", "LanderAvatar", "ShootOnlyAvatar", "SpawnPointMultiSprite",
-                    "LOSChaser"};
+                    "LOSChaser", "OrientedFlakAvatar"};
 
 
     /**
@@ -69,7 +70,7 @@ public class VGDLFactory
              OrientedAvatar.class,ShootAvatar.class, OngoingAvatar.class, OngoingTurningAvatar.class, BomberRandomMissile.class,
              OngoingShootAvatar.class, NullAvatar.class, AimedAvatar.class, PlatformerAvatar.class, BirdAvatar.class,
              SpaceshipAvatar.class, CarAvatar.class, WizardAvatar.class, LanderAvatar.class, ShootOnlyAvatar.class, SpawnPointMultiSprite.class,
-                    LOSChaser.class};
+                    LOSChaser.class, OrientedFlakAvatar.class};
 
     /**
      * Available effects for VGDL.
@@ -84,7 +85,8 @@ public class VGDLFactory
                     "transformToAll", "addTimer", "killIfFrontal", "killIfNotFrontal", "spawnBehind",
                     "updateSpawnType", "removeScore", "increaseSpeedToAll", "decreaseSpeedToAll", "setSpeedForAll", "transformToRandomChild",
                     "addHealthPointsToMax", "spawnIfCounterSubTypes", "bounceDirection", "wallBounce", "killIfSlow", "killIfAlive",
-                    "waterPhysics", "halfSpeed", "killIfNotUpright", "killIfFast", "wallReverse", "spawnAbove", "spawnLeft", "spawnRight", "spawnBelow"
+                    "waterPhysics", "halfSpeed", "killIfNotUpright", "killIfFast", "wallReverse", "spawnAbove", "spawnLeft", "spawnRight", "spawnBelow",
+                    "playSound"
             };
 
     /**
@@ -101,7 +103,7 @@ public class VGDLFactory
                     RemoveScore.class, IncreaseSpeedToAll.class, DecreaseSpeedToAll.class, SetSpeedForAll.class, TransformToRandomChild.class,
                     AddHealthPointsToMax.class, SpawnIfCounterSubTypes.class, BounceDirection.class, WallBounce.class, KillIfSlow.class,
                     KillIfAlive.class, WaterPhysics.class, HalfSpeed.class, KillIfNotUpright.class, KillIfFast.class, WallReverse.class,
-                    SpawnAbove.class, SpawnLeft.class, SpawnRight.class, SpawnBelow.class
+                    SpawnAbove.class, SpawnLeft.class, SpawnRight.class, SpawnBelow.class, SoundEffect.class
             };
 
 

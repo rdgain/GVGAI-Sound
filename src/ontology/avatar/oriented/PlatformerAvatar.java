@@ -72,10 +72,10 @@ public class PlatformerAvatar extends MovingAvatar
         if(Utils.processUseKey(getKeyHandler().getMask(), getPlayerID()) && on_ground) {
             Direction action = new Direction (0,-jump_strength);
         	this.orientation = new Direction (this.orientation.x(),0.0);
-        	this.physics.activeMovement(this, action, this.speed);
+        	this.physics.activeMovement(game, this, action, this.speed);
             Direction temp = new Direction (0,-1);
             lastmove = cooldown; //need this to force this movement.
-            this._updatePos(temp, 5);
+            this._updatePos(game, temp, 5);
         }
 
 
@@ -101,13 +101,13 @@ public class PlatformerAvatar extends MovingAvatar
     {
         //this.physics.passiveMovement(this);
     	if (physicstype != 0)
-    		super.updatePassive();
+    		super.updatePassive(game);
     	if (action.x()!=0.0 || action.y()!=0.0){
     		Direction new_action = new Direction(action.x()*ground_speedup_factor, action.y());
     		if (!on_ground){
     			new_action = new Direction(action.x()/air_slowdown_factor, action.y());
     		}
-    		lastMovementType = this.physics.activeMovement(this, new_action, speed);
+    		lastMovementType = this.physics.activeMovement(game, this, new_action, speed);
     	}
     }
 

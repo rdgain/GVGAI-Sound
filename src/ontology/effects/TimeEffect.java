@@ -83,6 +83,7 @@ public class TimeEffect extends Effect implements Comparable<TimeEffect> {
      * @param game    reference to the game object with the current state.
      */
     public void execute(VGDLSprite sprite1, VGDLSprite sprite2, Game game) {
+        super.execute(sprite1, sprite2, game);
         //If the time effect is not native, we cannot guarantee that the sprite will be there.
         delegate.execute(sprite1, sprite2, game);
         if (repeating)

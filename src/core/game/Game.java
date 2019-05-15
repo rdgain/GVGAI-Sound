@@ -238,6 +238,9 @@ public abstract class Game {
 	 */
 	Types.ACTIONS[] avatarLastAction;
 
+	boolean playAudio;
+	public boolean audio_game;
+
 	/**
 	 * VGDL variables, can be set at the top of the VGDL description.
 	 */
@@ -887,12 +890,23 @@ public abstract class Game {
 	public double[] playGame(Player[] players, int randomSeed, boolean isHuman, int humanID) {
 		// Prepare some structures and references for this game.
 		prepareGame(players, randomSeed);
-
 		// Create and initialize the panel for the graphics.
 		VGDLViewer view = new VGDLViewer(this, players[humanID]);
-		JEasyFrame frame;
-		frame = new JEasyFrame(view, "Java-VGDL");
+		JEasyFrame frame = new JEasyFrame(view, "Java-VGDL");
+		return playGame(frame, view, players, isHuman, humanID);
+	}
 
+	public double[] playAudioGame(Player[] players, int randomSeed, boolean isHuman, int humanID) {
+		// Prepare some structures and references for this game.
+		prepareGame(players, randomSeed);
+		// Create and initialize the panel for the graphics.
+		JPanel panel = new JPanel();
+		panel.setPreferredSize(new Dimension(300, 150));
+		JEasyFrame frame = new JEasyFrame(panel, "Java-VGDL");
+		return playGame(frame, null, players, isHuman, humanID);
+	}
+
+	private double[] playGame(JEasyFrame frame, VGDLViewer view, Player[] players, boolean isHuman, int humanID) {
 		frame.addKeyListener(ki);
 		frame.addWindowListener(wi);
 		wi.windowClosed = false;
@@ -922,7 +936,9 @@ public abstract class Game {
 			waitStep(remaining);
 
 			// Draw all sprites in the panel.
-			view.paint(this.spriteGroups);
+			if (view != null) {
+				view.paint(this.spriteGroups);
+			}
 
 			// Update the frame title to reflect current score and tick.
 			this.setTitle(frame);
@@ -1505,7 +1521,7 @@ public abstract class Game {
 		// Add to events history.
 		if (s1 != null && s2list != null)
 			for(VGDLSprite s2 : s2list)
-				addEvent(s1, s2);
+				addEvent(s1, s2, ef.audio);
 
 		if (ef.count) {
 			for (int i = 0; i < no_counters; i++) {
@@ -1536,7 +1552,7 @@ public abstract class Game {
 
 		// Add to events history.
 		if (s1 != null && s2 != null)
-			addEvent(s1, s2);
+			addEvent(s1, s2, ef.audio);
 
 		if (ef.count) {
 			for (int i = 0; i < no_counters; i++) {
@@ -1551,22 +1567,26 @@ public abstract class Game {
 		}
 	}
 
-	private void addEvent(VGDLSprite s1, VGDLSprite s2) {
+	private void addEvent(VGDLSprite s1, VGDLSprite s2, String audioSrc) {
 		if (s1.is_avatar)
 			historicEvents.add(
-					new Event(gameTick, false, s1.getType(), s2.getType(), s1.spriteID, s2.spriteID, s1.getPosition()));
+					new Event(gameTick, false, s1.getType(), s2.getType(), s1.spriteID, s2.spriteID,
+							s1.getPosition(), audioSrc));
 
 		else if (s1.is_from_avatar)
 			historicEvents.add(
-					new Event(gameTick, true, s1.getType(), s2.getType(), s1.spriteID, s2.spriteID, s1.getPosition()));
+					new Event(gameTick, true, s1.getType(), s2.getType(), s1.spriteID, s2.spriteID,
+							s1.getPosition(), audioSrc));
 
 		else if (s2.is_avatar)
 			historicEvents.add(
-					new Event(gameTick, false, s2.getType(), s1.getType(), s2.spriteID, s1.spriteID, s2.getPosition()));
+					new Event(gameTick, false, s2.getType(), s1.getType(), s2.spriteID, s1.spriteID,
+							s2.getPosition(), audioSrc));
 
 		else if (s2.is_from_avatar)
 			historicEvents.add(
-					new Event(gameTick, true, s2.getType(), s1.getType(), s2.spriteID, s1.spriteID, s2.getPosition()));
+					new Event(gameTick, true, s2.getType(), s1.getType(), s2.spriteID, s1.spriteID,
+							s2.getPosition(), audioSrc));
 	}
 
 	/**
@@ -2046,6 +2066,57 @@ public abstract class Game {
 	}
 
 	/**
+	 * Retuns the observation of this state.
+	 *
+	 * @return the observation.
+	 */
+	public AudioStateObservation getObservationAudio() {
+		return new AudioStateObservation(this, fwdModel.copy(), 0);
+	}
+
+	ArrayList<AudioObservation> getAudioObservations() {
+		ArrayList<AudioObservation> obs = new ArrayList<>();
+
+		// Sprites:
+		for (SpriteGroup spriteGroup : spriteGroups) {
+			for (VGDLSprite sp : spriteGroup.getSprites()) {
+				if (sp.audioMove != null && !sp.audioMove.equals("") && !sp.rect.equals(sp.lastrect)) {
+					obs.add(createAudioObservation(sp, sp.audioMove));
+				}
+				if (sp.audioUse != null && !sp.audioUse.equals("") && sp.used) {
+					obs.add(createAudioObservation(sp, sp.audioUse));
+					sp.used = false;
+				}
+				if (sp.beacon != null && !sp.beacon.equals("")) {
+					obs.add(createAudioObservation(sp, sp.beacon));
+				}
+			}
+		}
+
+		// Events:
+		for (Event historicEvent : historicEvents) {
+			if (historicEvent.gameStep >= getGameTick() - 1) {
+				obs.add(createAudioObservation(historicEvent));
+			}
+		}
+
+		Collections.sort(obs);
+		return obs;
+	}
+
+	private AudioObservation createAudioObservation(VGDLSprite sp, String audioSrc) {
+		double dist = sp.getPosition().dist(fwdModel.getAvatarPosition()) / block_size;
+		double intensity = 1/(dist + 1);
+		return new AudioObservation(sp.spriteID, intensity, audioSrc);
+	}
+
+	private AudioObservation createAudioObservation(Event e) {
+		double dist = e.position.dist(fwdModel.getAvatarPosition()) / block_size;
+		double intensity = 1/(dist + 1);
+		return new AudioObservation(e.activeTypeId, intensity, e.audioSrc);
+	}
+
+	/**
 	 * Retuns the observation of this state (for multiplayer).
 	 *
 	 * @return the observation.
@@ -2146,7 +2217,15 @@ public abstract class Game {
 		this.parameters = parameters;
 	}
 
-	/**
+    public boolean playAudio() {
+		return playAudio;
+    }
+
+	public void setAudio(boolean b) {
+		playAudio = b;
+	}
+
+    /**
 	 * Class for helping collision detection.
 	 */
 	protected class Bucket {

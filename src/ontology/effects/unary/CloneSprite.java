@@ -24,10 +24,11 @@ public class CloneSprite extends Effect {
 
     @Override
     public void execute(VGDLSprite sprite1, VGDLSprite sprite2, Game game) {
-	if(sprite1 == null){
-	    Logger.getInstance().addMessage(new Message(Message.WARNING, "1st sprite can't be EOS with CloneSprite interaction."));
-	    return;
-	}
+        super.execute(sprite1, sprite2, game);
+        if(sprite1 == null){
+            Logger.getInstance().addMessage(new Message(Message.WARNING, "1st sprite can't be EOS with CloneSprite interaction."));
+            return;
+        }
 	
         int itype = sprite1.getType();
         Vector2d pos = sprite1.getPosition();

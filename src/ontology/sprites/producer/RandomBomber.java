@@ -48,7 +48,7 @@ public class RandomBomber extends SpawnPoint
     public void update(Game game)
     {
         Direction act = (Direction) Utils.choice(Types.DBASEDIRS, game.getRandomGenerator());
-        this.physics.activeMovement(this, act, this.speed);
+        this.physics.activeMovement(game, this, act, this.speed);
         super.update(game);
     }
 

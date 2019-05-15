@@ -1,0 +1,20 @@
+BasicGame audio_game=True
+    SpriteSet
+        floor > Immovable invisible=True
+        exit > Door color=GREEN audio=beacon:shoot
+        avatar > MovingAvatar
+        wall > Immovable
+
+    InteractionSet
+        avatar wall > stepBack audio=bump
+        exit avatar > killSprite scoreChange=1
+
+    TerminationSet
+        SpriteCounter stype=exit limit=0 win=True
+        Timeout limit=1000 win=False
+
+    LevelMapping
+        . > floor
+        x > exit
+        w > wall
+        A > avatar

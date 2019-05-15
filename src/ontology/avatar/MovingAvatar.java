@@ -116,8 +116,8 @@ public class MovingAvatar extends VGDLSprite {
     {
     	//this.physics.passiveMovement(this);
         if (physicstype != Types.GRID)
-    		super.updatePassive();
-        lastMovementType = this.physics.activeMovement(this, action, speed);
+    		super.updatePassive(game);
+        lastMovementType = this.physics.activeMovement(game, this, action, speed);
     }
 
     /**
@@ -129,10 +129,14 @@ public class MovingAvatar extends VGDLSprite {
         ect.setMaxTimeMillis(CompetitionParameters.ACTION_TIME);
 
         Types.ACTIONS action;
-        if (game.no_players > 1) {
-            action = this.player.act(game.getObservationMulti(playerID), ect.copy());
+        if (game.audio_game) {
+            action = this.player.act(game.getObservationAudio(), ect.copy());
         } else {
-            action = this.player.act(game.getObservation(), ect.copy());
+            if (game.no_players > 1) {
+                action = this.player.act(game.getObservationMulti(playerID), ect.copy());
+            } else {
+                action = this.player.act(game.getObservation(), ect.copy());
+            }
         }
         
         if(action == null){

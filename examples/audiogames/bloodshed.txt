@@ -1,0 +1,29 @@
+BasicGame square_size=32 audio_game=True
+    SpriteSet
+        floor   > Immovable invisible=True
+        avatar  > OrientedFlakAvatar stype=sam orientation=RIGHT audio=use:shoot
+        sam     > Flicker singleton=True
+        fighter > Missile speed=0.5
+            fighterLeft  > orientation=LEFT
+            fighterRight > orientation=RIGHT
+        portal  > invisible=True
+        	portalLeft  > SpawnPoint stype=fighterLeft  cooldown=16 total=20
+        	portalRight > SpawnPoint stype=fighterRight cooldown=12 total=20
+
+    LevelMapping
+        . > floor
+        1 > portalLeft
+        2 > portalRight
+        A > avatar
+
+    TerminationSet
+        SpriteCounter      stype=avatar                 limit=0 win=False
+        MultiSpriteCounter stype1=fighter stype2=portal limit=0 win=True
+
+    InteractionSet
+        avatar  EOS  > stepBack audio=bump
+        sam EOS      > killSprite
+
+        avatar fighterLeft  > subtractHealthPoints value=1 scoreChange=-1 audio=avatarDie
+        avatar fighterRight > subtractHealthPoints value=1 scoreChange=-1 audio=avatarDie
+        fighter sam         > killSprite scoreChange=2  audio=killAlien

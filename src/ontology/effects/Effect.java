@@ -12,6 +12,7 @@ import core.game.Game;
 import core.logging.Logger;
 import core.logging.Message;
 import ontology.Types;
+import tools.SoundManager;
 import tools.Direction;
 import tools.Vector2d;
 
@@ -43,6 +44,9 @@ public abstract class Effect{
     //Count something else
     public boolean countElse = true;
     public String counterElse = "0";
+
+    // Audio of this effect, specifying audio source
+    public String audio;
 
     //Probabilty for stochastic effects.
     public double prob = 1;
@@ -82,7 +86,12 @@ public abstract class Effect{
      * @param sprite2 second sprite of the collision
      * @param game    reference to the game object with the current state.
      */
-    public abstract void execute(VGDLSprite sprite1, VGDLSprite sprite2, Game game);
+    public void execute(VGDLSprite sprite1, VGDLSprite sprite2, Game game) {
+        // Default execution of effect: play sound if any
+        if (game.playAudio() && audio != null && !audio.equals("")) {
+            SoundManager.getInstance().restart(audio);
+        }
+    }
 
 
     /**

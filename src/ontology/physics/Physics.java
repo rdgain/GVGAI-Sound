@@ -2,6 +2,7 @@ package ontology.physics;
 
 import java.awt.Rectangle;
 
+import core.game.Game;
 import core.vgdl.VGDLSprite;
 import ontology.Types;
 import tools.Direction;
@@ -15,7 +16,7 @@ import tools.Direction;
  */
 public interface Physics
 {
-    public Types.MOVEMENT passiveMovement(VGDLSprite sprite);
-    public Types.MOVEMENT activeMovement(VGDLSprite sprite, Direction action, double speed);
+    public Types.MOVEMENT passiveMovement(Game game, VGDLSprite sprite);
+    public Types.MOVEMENT activeMovement(Game game, VGDLSprite sprite, Direction action, double speed);
     public double distance(Rectangle r1, Rectangle r2);
 }

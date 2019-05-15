@@ -21,6 +21,7 @@ public class WaterPhysics extends Effect {
 
     @Override
     public void execute(VGDLSprite sprite1, VGDLSprite sprite2, Game game) {
+        super.execute(sprite1, sprite2, game);
         sprite1.gravity = 0.2;
     }
 }

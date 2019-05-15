@@ -24,6 +24,7 @@ import ontology.Types;
 import ontology.physics.ContinuousPhysics;
 import ontology.physics.GridPhysics;
 import ontology.physics.Physics;
+import tools.SoundManager;
 import tools.Direction;
 import tools.Utils;
 import tools.Vector2d;
@@ -333,6 +334,16 @@ public abstract class VGDLSprite {
     public double max_speed;
 
     /**
+     * Audio sources of this sprite, format is "action:soundSrc", where action can be move if sprite moves, or use if
+     * sprite has a use-type action (i.e. creating another sprite).
+     */
+    public String audio;
+    public String audioMove;
+    public String audioUse;
+    public String beacon;
+    public boolean used;
+
+    /**
      * Initializes the sprite, giving its position and dimensions.
      * @param position position of the sprite
      * @param size dimensions of the sprite on the screen.
@@ -376,6 +387,10 @@ public abstract class VGDLSprite {
         rotation = 0.0;
         max_speed = -1.0;
         images = new HashMap<>();
+        audio = "";
+        audioMove = "";
+        audioUse = "";
+        beacon = "";
 
         this.size = size;
         determinePhysics(physicstype, size);
@@ -422,7 +437,7 @@ public abstract class VGDLSprite {
 
         VGDLFactory factory = VGDLFactory.GetInstance();
         factory.parseParameters(content,this);
-        
+
         determinePhysics(physicstype, size);
 
         //post-process. Some sprites may need to do something interesting (i.e. SpawnPoint) once their
@@ -453,7 +468,7 @@ public abstract class VGDLSprite {
      */
     public void update(Game game)
     {
-        updatePassive();
+        updatePassive(game);
         if (timeToLive > -1) {
             if (timeToLive > 0) timeToLive--;
             else game.killSprite(this,false);
@@ -516,10 +531,13 @@ public abstract class VGDLSprite {
     /**
      * Updates this sprite applying the passive movement.
      */
-    public void updatePassive() {
+    public void updatePassive(Game game) {
 
         if (!is_static && !only_active) {
-            physics.passiveMovement(this);
+            physics.passiveMovement(game, this);
+        }
+        if (beacon != null && !beacon.equals("") && game.playAudio()) {
+            SoundManager.getInstance().restart(beacon);
         }
     }
 
@@ -545,7 +563,7 @@ public abstract class VGDLSprite {
      * @param speed the speed of the sprite.
      * @return true if the position changed.
      */
-    public boolean _updatePos(Direction orientation, int speed) {
+    public boolean _updatePos(Game game, Direction orientation, int speed) {
         if (speed == 0) {
             speed = (int) this.speed;
             if(speed == 0) return false;
@@ -555,13 +573,19 @@ public abstract class VGDLSprite {
         	rect.translate((int) (orientation.x() * speed), (int) (orientation.y() * speed));
         	updateBucket();
             lastmove = 0;
+
+            // Play movement audio
+            if (game.playAudio()) {
+                SoundManager.getInstance().restart(audioMove);
+            }
+
             return true;
         }
         return false;
     }
-    
+
     /**
-     * 
+     *
      * @param rot the rotation of the sprite
      */
     protected void _updateRotation(double rot)
@@ -709,12 +733,12 @@ public abstract class VGDLSprite {
 	                _drawImage(gphx, r);
 	            else
 	                _draw(gphx, r);
-	
+
 	            if(resources.size() > 0)
 	            {
 	                _drawResources(gphx, game, r);
 	            }
-	
+
 	            if(healthPoints > 0)
 	            {
 	                _drawHealthBar(gphx, game, r);
@@ -727,7 +751,7 @@ public abstract class VGDLSprite {
 	            {
 	                _drawResources(gphx, game, r);
 	            }
-	
+
 	            if(healthPoints > 0)
 	            {
 	                _drawHealthBar(gphx, game, r);
@@ -969,6 +993,25 @@ public abstract class VGDLSprite {
         //Safety checks:
         if(cooldown < 1)
             cooldown = 1; //Minimum possible value.
+
+        // Separate sounds
+        if (audio != null && !audio.equals("")) {
+            String[] audio_split = audio.split(";");
+            for (String a : audio_split) {
+                String[] a_split = a.split(":");
+                switch (a_split[0]) {
+                    case "move":
+                        audioMove = a_split[1];
+                        break;
+                    case "use":
+                        audioUse = a_split[1];
+                        break;
+                    case "beacon":
+                        beacon = a_split[1];
+                        break;
+                }
+            }
+        }
     }
 
 
@@ -1170,6 +1213,11 @@ public abstract class VGDLSprite {
         toSprite.max_speed = this.max_speed;
         toSprite.img = this.img;
         toSprite.orientedImg = this.orientedImg;
+        toSprite.audio = this.audio;
+        toSprite.audioMove = this.audioMove;
+        toSprite.audioUse = this.audioUse;
+        toSprite.beacon = this.beacon;
+        toSprite.used = this.used;
 
         toSprite.itypes = new ArrayList<>();
         toSprite.itypes.addAll(this.itypes);
@@ -1204,7 +1252,7 @@ public abstract class VGDLSprite {
         if(other.stationary != this.stationary) return false;
         if(other.mass != this.mass) return false;
         if(other.physicstype != this.physicstype) return false;
-        if(other.gravity != this.gravity) return false;		
+        if(other.gravity != this.gravity) return false;
         if(other.friction != this.friction) return false;
         if(other.shrinkfactor != this.shrinkfactor) return false;
         if(other.is_oriented != this.is_oriented) return false;
@@ -1227,6 +1275,10 @@ public abstract class VGDLSprite {
         if(other.healthPoints != this.healthPoints) return false;
         if(other.maxHealthPoints != this.maxHealthPoints) return false;
         if(other.limitHealthPoints != this.limitHealthPoints) return false;
+        if(!other.audio.equals(this.audio)) return false;
+        if(!other.audioMove.equals(this.audioMove)) return false;
+        if(!other.audioUse.equals(this.audioUse)) return false;
+        if(!other.beacon.equals(this.beacon)) return false;
 
         int numTypes = other.itypes.size();
         if(numTypes != this.itypes.size()) return false;

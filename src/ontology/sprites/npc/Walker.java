@@ -47,7 +47,7 @@ public class Walker extends VGDLSprite
     
     public void update(Game game)
     {
-    	super.updatePassive();
+    	super.updatePassive(game);
 
         double d;
     	if (this.airsteering || this.lastDirection().x == 0){
@@ -63,7 +63,7 @@ public class Walker extends VGDLSprite
     		}
     		Direction dir = new Direction(d,0);
     		this.orientation = dir.copy();
-    		this.physics.activeMovement(this, dir, this.max_speed);
+    		this.physics.activeMovement(game, this, dir, this.max_speed);
     	}
 
     	this.speed = max_speed;
