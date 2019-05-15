@@ -34,7 +34,7 @@ public class Agent extends AudioPlayer {
     private LearningState previousState;
     private double previousReward;
     private double discount = 0.99;
-    private double INTENSITY_THRESHOLD = 10;
+    private double INTENSITY_THRESHOLD = 0.01;
 
     // Mapping from sounds to a list of pairs (intensity, value). The values for intensities are updated at the end
     // of each game based on the game's result.

@@ -2105,11 +2105,15 @@ public abstract class Game {
 	}
 
 	private AudioObservation createAudioObservation(VGDLSprite sp, String audioSrc) {
-		return new AudioObservation(sp.spriteID, sp.getPosition().dist(fwdModel.getAvatarPosition()), audioSrc);
+		double dist = sp.getPosition().dist(fwdModel.getAvatarPosition()) / block_size;
+		double intensity = 1/(dist + 1);
+		return new AudioObservation(sp.spriteID, intensity, audioSrc);
 	}
 
 	private AudioObservation createAudioObservation(Event e) {
-		return new AudioObservation(e.activeTypeId, e.position.dist(fwdModel.getAvatarPosition()), e.audioSrc);
+		double dist = e.position.dist(fwdModel.getAvatarPosition()) / block_size;
+		double intensity = 1/(dist + 1);
+		return new AudioObservation(e.activeTypeId, intensity, e.audioSrc);
 	}
 
 	/**

@@ -39,7 +39,7 @@ public class Test {
 						// executed. null if not to save.
 
 		// 1. This starts a game, in a level, played by a human.
-//		AudioMachine.playOneGame(game, level1, recordActionsFile, seed, true);
+		AudioMachine.playOneGame(game, level1, recordActionsFile, seed, true);
 
 		// 2. This plays a game in a level by the controller.
 //		AudioMachine.runOneGame(game, level1, false, false, sampleQLearningSimple, recordActionsFile, seed);
@@ -48,18 +48,20 @@ public class Test {
 //		int M = 10;
 //		AudioMachine.runGames(game, new String[]{level1}, M, sampleQLearningSimple, null);
 
-		//5. This plays a single game, in the first L levels, M times each. Actions to file optional (set saveActions to true).
-		int L = 1, M = 100;
-		boolean saveActions = false;
-		String[] levels = new String[L];
-		String[] actionFiles = new String[L*M];
-
-		int actionIdx = 0;
-		for(int j = 0; j < L; ++j){
-			levels[j] = game.replace(gameName, gameName + "_lvl" + j);
-			if(saveActions) for(int k = 0; k < M; ++k)
-				actionFiles[actionIdx++] = "actions_game_" + gameIdx + "_level_" + j + "_" + k + ".txt";
-		}
-		AudioMachine.runGames(game, levels, M, sampleQLearningIntensity, saveActions ? actionFiles : null);
+		//5. This plays a single game, in the [startL, endL) levels, nReps each.
+		// Actions to file optional (set saveActions to true).
+//		int startL = 0, endL = 5, nReps = 100;
+//		boolean saveActions = false;
+//		int nLevels = endL - startL;
+//		String[] levels = new String[nLevels];
+//		String[] actionFiles = new String[nLevels*nReps];
+//
+//		int actionIdx = 0;
+//		for(int j = startL; j < endL; ++j){
+//			levels[j - startL] = game.replace(gameName, gameName + "_lvl" + j);
+//			if(saveActions) for(int k = 0; k < nReps; ++k)
+//				actionFiles[actionIdx++] = "actions_game_" + gameIdx + "_level_" + j + "_" + k + ".txt";
+//		}
+//		AudioMachine.runGames(game, levels, nReps, sampleQLearningIntensity, saveActions ? actionFiles : null);
     }
 }

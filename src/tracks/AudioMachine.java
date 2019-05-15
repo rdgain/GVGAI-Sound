@@ -17,9 +17,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Random;
 
-/**
- * TODO: replace StateObservation with AudioStateObservation and Player with AudioPlayer. Use in audio Test
- */
 public class AudioMachine {
     public static final boolean VERBOSE = false;
 
@@ -158,12 +155,12 @@ public class AudioMachine {
 
 				// Play game
 				double[] score = toPlay.runGame(new Player[]{player}, randomSeed);
-				//score = toPlay.playGame(players, randomSeed, false, 0);
-				toPlay.printResult();
 
 				// Finally, when the game is over, we need to tear the player down.
 				if (!AudioMachine.tearPlayerDown(toPlay, player)) {
 					score = toPlay.handleResult();
+					toPlay.printResult();
+				} else {
 					toPlay.printResult();
 				}
 
